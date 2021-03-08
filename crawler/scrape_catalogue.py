@@ -1,7 +1,5 @@
 
 from util import join_urls, get_logger, save_json
-from soupcache import SoupCache
-import re
 # schools/departments
 # http://catalogue.uci.edu/schoolsandprograms/
 
