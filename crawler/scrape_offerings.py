@@ -1,4 +1,4 @@
 
 
-def scrap_offerings():
+def scrape_offerings():
     return

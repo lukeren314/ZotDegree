@@ -41,7 +41,7 @@ def scrape_catalogue(soup_cache):
     # mapify
     degrees_map = {degree["name"]: degree for degree in degrees}
     schools_map = {school["name"]: school for school in schools}
-    departments_map = {department["name"]                       : department for department in departments}
+    departments_map = {department["name"]: department for department in departments}
 
     # assign schools, departments into degrees
     for school in schools:
@@ -168,9 +168,10 @@ def parse_course_info(course_div):
         elif line.startswith("Same as"):
             same_as = line[len("Same as "):].replace(".", "")
         elif line.startswith("(I") or line.startswith("(V"):
-            tokens = line.lower().replace("(", "").replace(")", "").replace(",", "").split()
+            tokens = line.replace("(", "").replace(
+                ")", "").replace(",", "").split()
             for token in tokens:
-                if token in ("ia", "ib", "ii", "iii", "iv", "va", "vb", "vi", "vii", "viii"):
+                if token in ("Ia", "Ib", "II", "III", "IV", "Va", "Vb", "VI", "VII", "VIII"):
                     ge_categories.append(token)
     return {
         "prerequisite": prerequisite,
@@ -288,17 +289,17 @@ def scrape_universal_requirements(soup_cache):
     # manual scrape :/
     return {
         "ge_requirements": {
-            "ia": 2,
-            "ib": 1,
-            "ii": 3,
-            "iii": 3,
-            "iv": 3,
-            "v": 3,
-            "va": 1,
-            "vb": 1,
-            "vi": 1,
-            "vii": 1,
-            "viii": 1
+            "Ia": 2,
+            "Ib": 1,
+            "II": 3,
+            "III": 3,
+            "IV": 3,
+            "V": 3,
+            "Va": 1,
+            "Vb": 1,
+            "VI": 1,
+            "VII": 1,
+            "VIII": 1
         },
         "credit_requirement": 180
     }

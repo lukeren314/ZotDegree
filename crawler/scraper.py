@@ -1,6 +1,6 @@
 from soupcache import SoupCache
 from scrape_catalogue import scrape_catalogue
-from scrape_offerings import scrap_offerings
+from scrape_offerings import scrape_offerings
 
 
 class Scraper:
