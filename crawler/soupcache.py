@@ -13,8 +13,8 @@ class SoupCache:
         self.cache_file_name = SOUP_CACHE_FILE_NAME
         self.vocabulary_file_name = SOUP_CACHE_VOCABULARY_NAME
 
-        open_code = "w+" if restart or not os.path.exists(
-            self.cache_file_name) else "r+"
+        open_code = "w+" if (restart or not os.path.exists(
+            self.cache_file_name)) else "a+"
         self.cache_file = open(self.cache_file_name,
                                open_code, encoding="utf-8")
         if not restart:
