@@ -1,6 +1,7 @@
 
+from util.logger import log_debug
 from util.urls import get_clean_text, get_header_text, get_urls
-
+import re
 
 COURSES_URL = "http://catalogue.uci.edu/allcourses/"
 
@@ -40,6 +41,7 @@ def parse_course_department(soup):
     name = header[header.find("("):]
     title = header[:-len(name)].rstrip()
     name = name[1:-1]
+    log_debug(header)
     return {
         "title": title,
         "name": name
@@ -65,22 +67,28 @@ def parse_course_div(course_div):
     return {**course, **info}
 
 
+course_title_re = re.compile(
+    r'([A-Z0-9&\/ ]+) ([0-9A-Z]+)\.  ([A-Za-z0-9.() —–\-\/:,&?\'+’]+)\.  (\.?[0-9]\.?[0-9]? ?-? ?\.?[0-9]?[0-9]?) (Workload )?Units?\.')
+course_title_no_units = re.compile(
+    r'([A-Z0-9&\/ ]+) ([0-9A-Z]+)\.  ([A-Za-z0-9.() —–\-\/:,&?\'+’]+)\.')
+
+
 def parse_course_title(title):
-    tokens = title.split(" ")
+    title = get_clean_text(title)
+
     if "Unit" in title:
-        department_number, _, *name, _, units, _ = tokens
+        reg = course_title_re.match(title)
+        print(title)
+        units = reg.group(4)
     else:
-        department_number, _, *name, _ = tokens
+        reg = course_title_no_units.match(title)
         units = 0
-    department_number = department_number.replace(u'\xa0', u' ')
-    number = department_number.split()[-1]
-    department = department_number[:-len(number)].strip()
-    # remove the period at the end
-    number = number[:-1]
-    id = department + " " + number
-    name = ' '.join(name)[:-1]
+
+    department, number, name = reg.group(1), reg.group(2), reg.group(3)
+    name = name.strip()
+    id_ = department + " " + number
     return {
-        "id": id,
+        "id": id_,
         "department": department,
         "number": number,
         "name": name,
