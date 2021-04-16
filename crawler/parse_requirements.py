@@ -11,7 +11,7 @@ def parse_requirements(soup):
 
 
 def parse_requirements_text_container(requirements_text_container):
-    all_requirements = {}
+    all_requirements = []
     toggleheads = requirements_text_container.find_all(class_="tglhead")
     course_lists = requirements_text_container.find_all(class_="sc_courselist")
     for i, course_list in enumerate(course_lists):
@@ -21,7 +21,10 @@ def parse_requirements_text_container(requirements_text_container):
         if header_clean_text in all_requirements:
             continue
         requirements = parse_requirements_table(course_list)
-        all_requirements[header_clean_text] = requirements
+        all_requirements.append({
+            "header": header_clean_text,
+            "requirements": requirements
+        })
     return all_requirements
 
 
@@ -91,7 +94,8 @@ def parse_requirements_table(courselist_table):
                 course.find(class_="courselistcomment").text)
             requirement = {
                 "type": type_,
-                "comment": comment
+                "comment": comment,
+                "courses": []
             }
             requirements.append(requirement)
             continue
@@ -99,13 +103,22 @@ def parse_requirements_table(courselist_table):
         search_comment = course.find(class_="courselistcomment")
         if search_comment:
             if "or" == search_comment.text.strip():
+                if len(requirements) > 0 and requirements[-1]["type"] in ("header", "comment"):
+                    type_ = "comment"
+                    comment = "or"
+                    requirement = {
+                        "type": type_,
+                        "comment": comment,
+                        "courses": []
+                    }
                 next_or = True
                 continue
             type_ = "comment"
             comment = get_clean_text(search_comment.text)
             requirement = {
                 "type": type_,
-                "comment": comment
+                "comment": comment,
+                "courses": []
             }
             requirements.append(requirement)
             continue
@@ -116,17 +129,27 @@ def parse_requirements_table(courselist_table):
 
         columns = course.find_all()
         course_id = get_clean_text(columns[0].get_text())
-        if "- " in course_id:
+        if course_id.startswith("or "):
+            course_id = course_id[len("or "):]
+        if "-" in course_id:
             course_requirement = {
                 "type": "series",
+                "comment": "",
                 "courses": []
             }
-            course_ids = course_id.split("-")
-            course_requirement["courses"] = [
-                course_id.strip() for course_id in course_ids]
+            course_ids = [c_id.strip()
+                          for c_id in course_id.split("-")]
+            base_course_id = course_ids[0]
+            course_department = base_course_id[:-
+                                               len(base_course_id.split(" ")[-1])].strip()
+            for i, course_id in enumerate(course_ids):
+                if i > 0 and not course_id.startswith(course_department):
+                    course_ids[i] = course_department.upper()+" "+course_id
+            course_requirement["courses"] = course_ids
         else:
             course_requirement = {
                 "type": "single",
+                "comment": "",
                 "courses": [course_id]
             }
         if len(requirements) > 0 and ("orclass" in class_ or next_or):
@@ -136,10 +159,82 @@ def parse_requirements_table(courselist_table):
                 courses = [prev_class]
                 requirements[-1] = {
                     "type": type_,
+                    "comment": "",
                     "courses": courses
                 }
             requirements[-1]["courses"].append(course_requirement)
+            next_or = False
             continue
         requirements.append(course_requirement)
-
+    requirements = nest_requirements_under_headers(requirements)
     return requirements
+
+
+def nest_requirements_under_headers(requirements):
+    new_requirements = []
+    header = None
+    current_requirements = []
+    for requirement in requirements:
+        if requirement["type"] == "header":
+            if header is None:
+                header = requirement["comment"]
+            else:
+                if len(current_requirements) == 0:
+                    new_requirements.append({
+                        "type": "header",
+                        "comment": header,
+                        "courses": []
+                    })
+                else:
+                    type_ = "section"
+                    comment = header
+                    courses = current_requirements
+                    new_requirements.append({
+                        "type": type_,
+                        "comment": comment,
+                        "courses": courses
+                    })
+                    header = requirement["comment"]
+                    current_requirements = []
+        else:
+            current_requirements.append(requirement)
+    if header is not None:
+        if len(current_requirements) == 0:
+            new_requirements.append({
+                "type": "header",
+                "comment": header,
+                "courses": []
+            })
+        else:
+            type_ = "section"
+            comment = header
+            courses = current_requirements
+            new_requirements.append({
+                "type": type_,
+                "comment": comment,
+                "courses": courses
+            })
+    else:
+        if current_requirements:
+            new_requirements.extend(current_requirements)
+    return new_requirements
+
+
+def test_requirements_computer_science(soup_cache):
+    soup = soup_cache.get_soup(
+        "http://catalogue.uci.edu/donaldbrenschoolofinformationandcomputersciences/departmentofcomputerscience/computerscience_bs/#requirementstext")
+    requirements = parse_requirements(soup)
+
+
+def test_requirements_spanish_minor(soup_cache):
+    soup = soup_cache.get_soup(
+        "http://catalogue.uci.edu/schoolofhumanities/departmentofspanishandportuguese/spanish_minor/#requirementstext")
+    requirements = parse_requirements(soup)
+
+
+if __name__ == "__main__":
+    from soupcache import SoupCache
+    soup_cache = SoupCache()
+
+    # test_requirements_computer_science(soup_cache)
+    test_requirements_spanish_minor(soup_cache)
