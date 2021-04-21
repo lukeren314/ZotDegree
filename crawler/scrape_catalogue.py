@@ -26,6 +26,10 @@ def scrape_and_save_course_departments(soup_cache, data_path):
     save_data(data_path, "course_departments_list.json",
               course_departments_list)
 
+    course_list = create_course_list(courses)
+
+    save_data(data_path, "course_list.json", course_list)
+
 
 def create_course_departments_list(course_departments):
     course_departments_list = []
@@ -33,14 +37,26 @@ def create_course_departments_list(course_departments):
         "value": "ALL",
         "label": "ALL Departments"
     })
-    for course_department in sorted(course_departments):
-        value = course_department
-        label = f"{course_department} {course_departments[course_department]['title']}"
+    for course_department_label, course_department_data in sorted(course_departments.items(), key=lambda label, _: label):
+        value = course_department_label
+        label = f"{course_department_label} {course_department_data['title']}"
         course_departments_list.append({
             "value": value,
             "label": label
         })
     return course_departments_list
+
+
+def create_course_list(courses):
+    course_list = []
+    for course_name, course_data in sorted(courses.items(), key=lambda name, _: name):
+        value = course_name
+        label = f"{course_name} {course_data['name']}"
+        course_list.append({
+            "value": value,
+            "label": label
+        })
+    return course_list
 
 
 def scrape_and_save_degrees(soup_cache, data_path):

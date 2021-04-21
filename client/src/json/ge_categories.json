@@ -1,0 +1,12 @@
+[
+  { "value": "Ia", "label": "Ia Lower Division Writing" },
+  { "value": "Ib", "label": "Ib Upper Division Writing" },
+  { "value": "II", "label": "II Science and Technology" },
+  { "value": "III", "label": "III Social and Behavioral Sciences" },
+  { "value": "IV", "label": "IV Arts and Humanities" },
+  { "value": "Va", "label": "Va Quantitative Literacy" },
+  { "value": "Vb", "label": "Vb Formal Reasoning" },
+  { "value": "VI", "label": "VI Language other than English" },
+  { "value": "VII", "label": "VII Multicultural Studies" },
+  { "value": "VIII", "label": "VIII International/Global Issues" }
+]

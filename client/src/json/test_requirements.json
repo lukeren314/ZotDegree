@@ -1,0 +1,284 @@
+{
+  "name": "Computer Science, B.S.",
+  "subject": "Computer Science",
+  "level": "B.S.",
+  "school": "Donald Bren School of Information and Computer Sciences",
+  "department": "Department of Computer Science",
+  "requirementsLists": [
+    {
+      "header": "Major Requirements",
+      "requirements": [
+        {
+          "type": "section",
+          "comment": "Lower-division",
+          "courses": [
+            {
+              "type": "comment",
+              "comment": "A. Select one of the following series:",
+              "courses": []
+            },
+            {
+              "type": "or",
+              "comment": "",
+              "courses": [
+                {
+                  "type": "series",
+                  "comment": "",
+                  "courses": ["I&C SCI 31", "I&C SCI 32", "I&C SCI 33"]
+                },
+                {
+                  "type": "series",
+                  "comment": "",
+                  "courses": ["I&C SCI 32A", "I&C SCI 33"]
+                }
+              ]
+            },
+            { "type": "comment", "comment": "B. Complete:", "courses": [] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 45C"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 46"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 51"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 53"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 53L"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 43"] },
+            {
+              "type": "series",
+              "comment": "",
+              "courses": ["MATH 2A", "MATH 2B"]
+            },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 6B"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 6D"] },
+            {
+              "type": "or",
+              "comment": "",
+              "courses": [
+                { "type": "single", "comment": "", "courses": ["I&C SCI 6N"] },
+                { "type": "single", "comment": "", "courses": ["MATH 3A"] }
+              ]
+            },
+            { "type": "single", "comment": "", "courses": ["STATS 67"] },
+            {
+              "type": "comment",
+              "comment": "C. Two courses approved for General Education category II except those offered by CSE, Economics, Engineering, ICS, or Mathematics. University Studies courses can be used with the approval of the CS Vice Chair for Undergraduate Studies.",
+              "courses": []
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Upper-division",
+          "courses": [
+            { "type": "comment", "comment": "A. Core", "courses": [] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 161"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 139W"] },
+            {
+              "type": "comment",
+              "comment": "B. Upper-division electives: Select 11 upper-division courses from the list below. Sections B-1 and B-2 must be completed as part of the 11 upper-division electives.",
+              "courses": []
+            },
+            {
+              "type": "comment",
+              "comment": "COMPSCI 103\u2013160, 162-189",
+              "courses": []
+            },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 102"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 113"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 115"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 117"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 121"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 122"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 124"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 131"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 133"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 134"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 161"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 162"] },
+            {
+              "type": "comment",
+              "comment": "B-1. Project Courses: Choose at least two projects courses from the following list:",
+              "courses": []
+            },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 113"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 114"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 117"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122B"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122C"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122D"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 125"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 133"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 142B"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 143B"] },
+            {
+              "type": "series",
+              "comment": "",
+              "courses": ["COMPSCI 145", "COMPSCI 145L"]
+            },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 147"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 153"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 154"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 165"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 175"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 117"] },
+            { "type": "single", "comment": "", "courses": ["IN4MATX 134"] },
+            {
+              "type": "comment",
+              "comment": "B-2. Specialization: Select and satisfy the requirements for one of the specializations below. (Note: Students may not pursue more than one specialization.)",
+              "courses": []
+            },
+            {
+              "type": "comment",
+              "comment": "Some of the specializations include recommended electives. These are courses related to the specialization and intended to help students choose courses to take toward their upper-division elective requirement.",
+              "courses": []
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Algorithms: Four courses from the following list:",
+          "courses": [
+            { "type": "single", "comment": "", "courses": ["COMPSCI 162"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 163"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 164"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 165"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 166"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 167"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 169"] }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Architecture and Embedded Systems: four courses from the following list:",
+          "courses": [
+            {
+              "type": "series",
+              "comment": "",
+              "courses": ["COMPSCI 145", "COMPSCI 145L"]
+            },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 147"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 151"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 152"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 153"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 154"] }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Bioinformatics: three courses from the following list:",
+          "courses": [
+            { "type": "single", "comment": "", "courses": ["COMPSCI 184A"] },
+            { "type": "comment", "comment": "and complete:", "courses": [] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 172B"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 172C"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 184C"] }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "General CS track",
+          "courses": [
+            {
+              "type": "comment",
+              "comment": "COMPSCI 103-189, except COMPSCI 161",
+              "courses": []
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Information",
+          "courses": [
+            { "type": "single", "comment": "", "courses": ["COMPSCI 121"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122A"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 178"] },
+            {
+              "type": "comment",
+              "comment": "and four courses from:",
+              "courses": []
+            },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 45J"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122B"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122C"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122D"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 125"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 132"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 134"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 141"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 142A"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 143A"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 163"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 165"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 167"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 179"] },
+            {
+              "type": "comment",
+              "comment": "at least one of which must be:",
+              "courses": []
+            },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122B"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122C"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 122D"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 125"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 179"] }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Intelligent Systems",
+          "courses": [
+            { "type": "single", "comment": "", "courses": ["COMPSCI 171"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 175"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 178"] },
+            {
+              "type": "comment",
+              "comment": "and at least three courses from:",
+              "courses": []
+            },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 116"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 121"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 125"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 162"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 163"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 164"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 169"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 177"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 179"] }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Networked Systems",
+          "courses": [
+            { "type": "single", "comment": "", "courses": ["COMPSCI 132"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 133"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 134"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 143A"] }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Systems and Software: three courses from the following list:",
+          "courses": [
+            { "type": "single", "comment": "", "courses": ["COMPSCI 131"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 141"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 142A"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 142B"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 143A"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 143B"] }
+          ]
+        },
+        {
+          "type": "section",
+          "comment": "Visual Computing: four courses from the following list:",
+          "courses": [
+            { "type": "single", "comment": "", "courses": ["COMPSCI 111"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 112"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 114"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 116"] },
+            { "type": "single", "comment": "", "courses": ["COMPSCI 117"] },
+            { "type": "single", "comment": "", "courses": ["I&C SCI 162"] }
+          ]
+        }
+      ]
+    }
+  ],
+  "url": "http://catalogue.uci.edu/donaldbrenschoolofinformationandcomputersciences/departmentofcomputerscience/computerscience_bs/"
+}
