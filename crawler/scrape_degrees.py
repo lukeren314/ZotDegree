@@ -43,7 +43,7 @@ def parse_degree(soup):
         "level": level,
         "school": school,
         "department": department,
-        "requirementsLists": degree_requirements
+        "requirements": degree_requirements
     }
 
 

@@ -18,6 +18,8 @@ def parse_requirements_text_container(requirements_text_container):
         potential_headers = get_potential_headers(course_list)
         header_text = pick_header_text(potential_headers, toggleheads, i)
         header_clean_text = get_clean_text(header_text)
+        if header_clean_text[-1] == "1":  # footnote number, get rid of it
+            header_clean_text = header_clean_text[:-1]
         if header_clean_text in all_requirements:
             continue
         requirements = parse_requirements_table(course_list)

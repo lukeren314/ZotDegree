@@ -37,7 +37,7 @@ def create_course_departments_list(course_departments):
         "value": "ALL",
         "label": "ALL Departments"
     })
-    for course_department_label, course_department_data in sorted(course_departments.items(), key=lambda label, _: label):
+    for course_department_label, course_department_data in sorted(course_departments.items(), key=lambda x: x[0]):
         value = course_department_label
         label = f"{course_department_label} {course_department_data['title']}"
         course_departments_list.append({
@@ -49,7 +49,7 @@ def create_course_departments_list(course_departments):
 
 def create_course_list(courses):
     course_list = []
-    for course_name, course_data in sorted(courses.items(), key=lambda name, _: name):
+    for course_name, course_data in sorted(courses.items(), key=lambda x: x[0]):
         value = course_name
         label = f"{course_name} {course_data['name']}"
         course_list.append({
