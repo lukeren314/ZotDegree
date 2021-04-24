@@ -7,12 +7,12 @@ import { DragDropContext } from "react-beautiful-dnd";
 import DraggableIdManager from "./DraggableIdManager";
 import {
   newYearPlans,
-  newYearPlan,
   addCourse,
   removeCourse,
   moveCourse,
   removeCourseFromQuarter,
   DEFAULT_YEARS,
+  DEFAULT_START_YEAR,
 } from "./util";
 
 class CoursePlanner extends PureComponent {
@@ -23,6 +23,7 @@ class CoursePlanner extends PureComponent {
       yearPlans: initialYearPlans,
       courseSearchList: null,
       numYears: DEFAULT_YEARS,
+      startYear: DEFAULT_START_YEAR,
     };
 
     this.draggableIdManager = new DraggableIdManager();
@@ -32,22 +33,14 @@ class CoursePlanner extends PureComponent {
     this.searchCourses = this.searchCourses.bind(this);
     this.findCourseId = this.findCourseId.bind(this);
     this.setNumYears = this.setNumYears.bind(this);
+    this.setStartYear = this.setStartYear.bind(this);
     this.deleteCourse = this.deleteCourse.bind(this);
   }
   setNumYears(event) {
-    let newNumYears = event.target.value;
-    let newYearPlans = { ...this.state.yearPlans };
-    for (let i = 0; i < newNumYears; ++i) {
-      if (!(i in this.state.yearPlans)) {
-        newYearPlans[i] = newYearPlan();
-      }
-    }
-    for (let yearPlanId in newYearPlans) {
-      if (yearPlanId >= newNumYears) {
-        delete newYearPlans[yearPlanId];
-      }
-    }
-    this.setState({ yearPlans: newYearPlans, numYears: newNumYears });
+    this.setState({ numYears: event.target.value });
+  }
+  setStartYear(event) {
+    this.setState({ startYear: event.target.value });
   }
   componentDidMount() {
     this.addCourses(0, "Fall", ["CS 121", "CS 171", "CS 178"]);
@@ -171,6 +164,7 @@ class CoursePlanner extends PureComponent {
     });
   }
   render() {
+    const { numYears, startYear, yearPlans, courseSearchList } = this.state;
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Grid container style={{ height: "85vh" }}>
@@ -184,12 +178,16 @@ class CoursePlanner extends PureComponent {
             style={{ overflow: "auto", height: "100%" }}
           >
             <CourseToolbar
-              numYears={this.state.numYears}
+              numYears={numYears}
               setNumYears={this.setNumYears}
+              startYear={startYear}
+              setStartYear={this.setStartYear}
             />
             <CoursePlan
-              coursePlan={this.state.yearPlans}
+              coursePlan={yearPlans}
               deleteCourse={this.deleteCourse}
+              startYear={startYear}
+              numYears={numYears}
             />
           </Grid>
           <Grid
@@ -202,7 +200,7 @@ class CoursePlanner extends PureComponent {
             style={{ overflow: "auto", height: "100%" }}
           >
             <ToolPanels
-              courseSearchList={this.state.courseSearchList}
+              courseSearchList={courseSearchList}
               searchCourses={this.searchCourses}
             />
           </Grid>

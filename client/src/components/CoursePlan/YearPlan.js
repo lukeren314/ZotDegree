@@ -4,7 +4,10 @@ import QuarterPlan from "./QuarterPlan";
 import { QUARTERS } from "../CoursePlanner/util";
 
 function YearPlan(props) {
-  const { year, yearPlan, deleteCourse } = props;
+  const { year, yearPlan, startYear, deleteCourse } = props;
+  const yearRange = `${parseInt(startYear) + parseInt(year)} - ${
+    parseInt(startYear) + parseInt(year) + 1
+  }`;
   return (
     <Fragment>
       <Grid container xs direction="row" item spacing={1}>
@@ -19,7 +22,7 @@ function YearPlan(props) {
               textAlign: "center",
             }}
           >
-            {"202" + year + "-2021"}
+            {yearRange}
           </Typography>
         </Grid>
         {QUARTERS.map((quarter) => (

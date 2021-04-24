@@ -1,9 +1,10 @@
 export const DEFAULT_YEARS = 4;
+export const DEFAULT_START_YEAR = new Date().getFullYear();
 export const QUARTERS = ["Fall", "Winter", "Spring", "Summer"];
 
 export function newYearPlans() {
   let yearPlans = {};
-  for (let i = 0; i < DEFAULT_YEARS; ++i) {
+  for (let i = 0; i < DEFAULT_YEARS + 1; ++i) {
     yearPlans[i] = newYearPlan();
   }
   return yearPlans;
