@@ -1,0 +1,15 @@
+
+# environemnt variables
+.env
+
+# dependencies
+node_modules
+
+# crawled datasets
+datasets
+
+# key file
+*.pem
+
+# bat files
+connectMDB.bat
