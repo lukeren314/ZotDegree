@@ -55,11 +55,11 @@ export function dragLogic(
       openAlert,
       draggableIdManager
     );
-  } else if (destination.droppableId === "course-search") {
-    return removeCourse(yearPlans, source);
-  } else {
-    return moveCourse(yearPlans, source, destination, openAlert);
   }
+  if (destination.droppableId === "course-search") {
+    return removeCourse(yearPlans, source);
+  }
+  return moveCourse(yearPlans, source, destination, openAlert);
 }
 
 function newYearPlan() {
@@ -150,34 +150,34 @@ function moveCourse(yearPlans, source, destination, openAlert) {
       [destinationQuarter]: destinationCourses,
     };
     return { ...yearPlans, [sourceYear]: yearPlan };
-  } else {
-    const [sourceCourses, destinationCourses] = move(
-      yearPlans[sourceYear][sourceQuarter],
-      yearPlans[destinationYear][destinationQuarter],
-      source.index,
-      destination.index
-    );
-    if (
-      sourceCourses.length > MAX_COURSE_LIMIT ||
-      destinationCourses.length > MAX_COURSE_LIMIT
-    ) {
-      openAlert(`Max course limit: ${MAX_COURSE_LIMIT}`);
-      return yearPlans;
-    }
-    const sourceYearPlan = {
-      ...yearPlans[sourceYear],
-      [sourceQuarter]: sourceCourses,
-    };
-    const destinationYearPlan = {
-      ...yearPlans[destinationYear],
-      [destinationQuarter]: destinationCourses,
-    };
-    return {
-      ...yearPlans,
-      [sourceYear]: sourceYearPlan,
-      [destinationYear]: destinationYearPlan,
-    };
   }
+  // otherwise, move between different years
+  const [sourceCourses, destinationCourses] = move(
+    yearPlans[sourceYear][sourceQuarter],
+    yearPlans[destinationYear][destinationQuarter],
+    source.index,
+    destination.index
+  );
+  if (
+    sourceCourses.length > MAX_COURSE_LIMIT ||
+    destinationCourses.length > MAX_COURSE_LIMIT
+  ) {
+    openAlert(`Max course limit: ${MAX_COURSE_LIMIT}`);
+    return yearPlans;
+  }
+  const sourceYearPlan = {
+    ...yearPlans[sourceYear],
+    [sourceQuarter]: sourceCourses,
+  };
+  const destinationYearPlan = {
+    ...yearPlans[destinationYear],
+    [destinationQuarter]: destinationCourses,
+  };
+  return {
+    ...yearPlans,
+    [sourceYear]: sourceYearPlan,
+    [destinationYear]: destinationYearPlan,
+  };
 }
 
 function replaceItems(yearPlans, items, year, quarter) {
