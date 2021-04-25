@@ -8,7 +8,10 @@ function NavBar() {
   return (
     <AppBar position="static" style={{ marginBottom: "4px" }}>
       <Toolbar variant="dense">
-        <Typography variant="h3" style={{ paddingRight: "24px" }}>
+        <Typography
+          variant="h3"
+          style={{ paddingRight: "24px", paddingBottom: "4px" }}
+        >
           ZotDegree
         </Typography>
 

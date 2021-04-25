@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Grid, Typography } from "@material-ui/core";
 import QuarterPlan from "./QuarterPlan";
-import { QUARTERS } from "../CoursePlanner/util";
+import { QUARTERS } from "../CoursePlanner/courseLogic";
 
 function YearPlan(props) {
   const { year, yearPlan, startYear, deleteCourse } = props;

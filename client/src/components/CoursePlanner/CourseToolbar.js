@@ -5,7 +5,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { DEFAULT_START_YEAR } from "./util";
+import { DEFAULT_START_YEAR } from "./courseLogic";
 const YEARS_BEFORE = 10;
 const YEARS_AFTER = 10;
 const years = [...Array(YEARS_BEFORE + YEARS_AFTER + 1).keys()].map(

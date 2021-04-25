@@ -23,7 +23,7 @@ const styles = (theme) => ({
   },
 });
 
-const getItemStyle = (isDragging, draggableStyle, grid) => {
+const getItemStyle = (isDragging, draggableStyle) => {
   return {
     // some basic styles to make the items look a bit nicer
     userSelect: "none",
@@ -31,7 +31,8 @@ const getItemStyle = (isDragging, draggableStyle, grid) => {
     margin: `0 0 ${4}px 0`,
     // width: "9vw",
     // change background colour if dragging
-    background: isDragging ? "lightgreen" : "grey",
+    background: isDragging ? "lightgreen" : "#0064a4",
+    color: "white",
 
     // styles we need to apply on draggables
     ...draggableStyle,
@@ -50,14 +51,7 @@ class CourseDraggable extends PureComponent {
     this.setState({ selected: null });
   }
   render() {
-    const {
-      course,
-      index,
-      grid,
-      isDeletable,
-      deleteCourse,
-      classes,
-    } = this.props;
+    const { course, index, isDeletable, deleteCourse, classes } = this.props;
     return (
       <Draggable key={course.id} draggableId={course.id} index={index}>
         {(provided, snapshot) => (
@@ -68,8 +62,7 @@ class CourseDraggable extends PureComponent {
               {...provided.dragHandleProps}
               style={getItemStyle(
                 snapshot.isDragging,
-                provided.draggableProps.style,
-                grid
+                provided.draggableProps.style
               )}
               variant="outlined"
               onClick={(event) =>
@@ -85,7 +78,10 @@ class CourseDraggable extends PureComponent {
                   <ListItemText
                     primary={course.content.id}
                     secondary={(course.content.units || 0) + " Units"}
-                    secondaryTypographyProps={{ variant: "caption" }}
+                    secondaryTypographyProps={{
+                      variant: "caption",
+                      color: "white",
+                    }}
                   />
                   <ListItemSecondaryAction
                     className={classes.listItemSecondaryAction}
@@ -99,7 +95,10 @@ class CourseDraggable extends PureComponent {
                           deleteCourse(course.content, index);
                         }}
                       >
-                        <ClearIcon fontSize="small" />
+                        <ClearIcon
+                          fontSize="small"
+                          style={{ color: "white" }}
+                        />
                       </IconButton>
                     )}
                   </ListItemSecondaryAction>
