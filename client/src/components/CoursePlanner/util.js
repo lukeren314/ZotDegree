@@ -18,43 +18,6 @@ export function newYearPlan() {
   return yearPlan;
 }
 
-export function addCourse(
-  courseSearchList,
-  yearPlans,
-  source,
-  destination,
-  newId
-) {
-  const [destinationYear, destinationQuarter] = getYearQuarter(
-    destination.droppableId
-  );
-  const items = copyTo(
-    courseSearchList,
-    yearPlans[destinationYear][destinationQuarter],
-    source.index,
-    destination.index,
-    newId
-  );
-  const newYearPlans = replaceItems(
-    yearPlans,
-    items,
-    destinationYear,
-    destinationQuarter
-  );
-  return newYearPlans;
-}
-
-export function removeCourse(yearPlans, source) {
-  const [sourceYear, sourceQuarter, index] = getSourceInfo(source);
-  const newYearPlans = removeCourseFromQuarter(
-    yearPlans,
-    sourceYear,
-    sourceQuarter,
-    index
-  );
-  return newYearPlans;
-}
-
 export function getSourceInfo(source) {
   return [...getYearQuarter(source.droppableId), source.index];
 }
@@ -65,7 +28,7 @@ export function removeCourseFromQuarter(yearPlans, year, quarter, index) {
   return newYearPlans;
 }
 
-function replaceItems(yearPlans, items, year, quarter) {
+export function replaceItems(yearPlans, items, year, quarter) {
   const yearPlan = {
     ...yearPlans[year],
     [quarter]: items,
@@ -73,59 +36,22 @@ function replaceItems(yearPlans, items, year, quarter) {
   return { ...yearPlans, [year]: yearPlan };
 }
 
-export function moveCourse(yearPlans, source, destination) {
-  let [sourceYear, sourceQuarter] = getYearQuarter(source.droppableId);
-  let [destinationYear, destinationQuarter] = getYearQuarter(
-    destination.droppableId
+export function reorderCourses(
+  yearPlans,
+  year,
+  quarter,
+  sourceIndex,
+  destinationIndex
+) {
+  const items = reorder(
+    yearPlans[year][quarter],
+    sourceIndex,
+    destinationIndex
   );
-  if (source.droppableId === destination.droppableId) {
-    // swap within a quarter
-    const items = reorder(
-      yearPlans[sourceYear][sourceQuarter],
-      source.index,
-      destination.index
-    );
-    return replaceItems(yearPlans, items, sourceYear, sourceQuarter);
-  }
-  if (sourceYear === destinationYear) {
-    // swap within a year
-    const result = move(
-      yearPlans[sourceYear][sourceQuarter],
-      yearPlans[sourceYear][destinationQuarter],
-      source.index,
-      destination.index
-    );
-    const yearPlan = {
-      ...yearPlans[sourceYear],
-      [sourceQuarter]: result[0],
-      [destinationQuarter]: result[1],
-    };
-    return { ...yearPlans, [sourceYear]: yearPlan };
-  } else {
-    const result = move(
-      yearPlans[sourceYear][sourceQuarter],
-      yearPlans[destinationYear][destinationQuarter],
-      source.index,
-      destination.index
-    );
-    const sourceYearPlan = {
-      ...yearPlans[sourceYear],
-      [sourceQuarter]: result[0],
-    };
-    const destinationYearPlan = {
-      ...yearPlans[destinationYear],
-      [destinationQuarter]: result[1],
-    };
-
-    return {
-      ...yearPlans,
-      [sourceYear]: sourceYearPlan,
-      [destinationYear]: destinationYearPlan,
-    };
-  }
+  return replaceItems(yearPlans, items, year, quarter);
 }
 
-function getYearQuarter(droppableId) {
+export function getYearQuarter(droppableId) {
   return [droppableId.substr(0, 1), droppableId.substr(1)];
 }
 
@@ -137,7 +63,13 @@ function reorder(list, startIndex, endIndex) {
   return result;
 }
 
-function copyTo(source, destination, sourceIndex, destinationIndex, newId) {
+export function copyTo(
+  source,
+  destination,
+  sourceIndex,
+  destinationIndex,
+  newId
+) {
   let sourceObjectClone = { ...source[sourceIndex] };
   sourceObjectClone.id = newId;
   const destClone = Array.from(destination);
@@ -151,7 +83,7 @@ function removeFrom(source, sourceIndex) {
   return sourceClone;
 }
 
-function move(source, destination, sourceIndex, destinationIndex) {
+export function move(source, destination, sourceIndex, destinationIndex) {
   const sourceClone = Array.from(source);
   const destClone = Array.from(destination);
   const [removed] = sourceClone.splice(sourceIndex, 1);

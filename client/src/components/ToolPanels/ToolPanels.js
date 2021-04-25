@@ -8,6 +8,8 @@ import geCategoriesList from "../../json/ge_categories.json";
 import departmentsList from "../../json/course_departments_list.json";
 import degreesList from "../../json/degrees_list.json";
 
+const MAX_DEGREES = 10;
+
 function ToolPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -52,6 +54,10 @@ class ToolPanels extends PureComponent {
     this.setState({ currentTab: newTab });
   }
   setDegrees(event, newDegrees) {
+    if (newDegrees.length > MAX_DEGREES) {
+      this.props.openAlert(`Max degrees limit: ${MAX_DEGREES}`);
+      return;
+    }
     this.setState({ degrees: newDegrees });
     this.getNewRequirements(newDegrees);
   }
