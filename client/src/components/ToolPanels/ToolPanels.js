@@ -37,7 +37,7 @@ class ToolPanels extends PureComponent {
       // CourseSearchPanel
       department: departmentsList[0],
       courseNumber: "",
-      geCategories: [],
+      geCategory: "N/A",
     };
 
     this.setTab = this.setTab.bind(this);
@@ -47,7 +47,7 @@ class ToolPanels extends PureComponent {
     this.setSectionOpen = this.setSectionOpen.bind(this);
     this.setDepartment = this.setDepartment.bind(this);
     this.setCourseNumber = this.setCourseNumber.bind(this);
-    this.setGECategories = this.setGECategories.bind(this);
+    this.setGECategory = this.setGECategory.bind(this);
     this.searchQuery = this.searchQuery.bind(this);
   }
   setTab(event, newTab) {
@@ -132,14 +132,19 @@ class ToolPanels extends PureComponent {
     this.setState({ department: newDepartment });
   }
   setCourseNumber(event) {
+    const newCourseNumber = event.target.value;
+    if (!newCourseNumber.match(/^[0-9]+[A-Za-z]* ?(- ?[0-9]+[A-Za-z]*)?$/g)) {
+      this.props.openAlert("Course number/range invalid!");
+      return;
+    }
     this.setState({ courseNumber: event.target.value });
   }
-  setGECategories(event, newGECategories) {
-    this.setState({ geCategories: newGECategories });
+  setGECategory(event, newGECategory) {
+    this.setState({ geCategory: newGECategory });
   }
   searchQuery() {
-    const { department, courseNumber, geCategories } = this.state;
-    const query = { department, courseNumber, geCategories };
+    const { department, courseNumber, geCategory } = this.state;
+    const query = { department, courseNumber, geCategory };
     this.props.searchCourses(query);
   }
   render() {
@@ -147,7 +152,7 @@ class ToolPanels extends PureComponent {
       currentTab,
       department,
       courseNumber,
-      geCategories,
+      geCategory,
       requirements,
       degrees,
     } = this.state;
@@ -181,8 +186,8 @@ class ToolPanels extends PureComponent {
               setDepartment={this.setDepartment}
               courseNumber={courseNumber}
               setCourseNumber={this.setCourseNumber}
-              geCategories={geCategories}
-              setGECategories={this.setGECategories}
+              geCategory={geCategory}
+              setGECategory={this.setGECategory}
             />
           </ToolPanel>
         </div>

@@ -1,19 +1,18 @@
 const degrees = require("../../crawler/datasets/degrees.json");
 const schools = require("../../crawler/datasets/schools.json");
-const universityRequirements = require("../../crawler/datasets/universal_requirements.json");
 
 const express = require("express");
 const router = express.Router();
 
 router.get("/:degreeName", async (req, res) => {
   try {
-    if (!("degreeName" in req.params)) {
+    if (!req.params.degreeName) {
       res.status(400).json({ error: "Missing degreeName" });
     }
     const requirements = getRequirements(req.params.degreeName);
     if (requirements === null) {
       res.status(500).json({
-        error: `Requirements for degree${req.params.degreeName} not found`,
+        error: `Requirements for degree ${req.params.degreeName} not found`,
       });
       return;
     }

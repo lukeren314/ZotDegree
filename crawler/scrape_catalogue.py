@@ -30,6 +30,8 @@ def scrape_and_save_course_departments(soup_cache, data_path):
 
     save_data(data_path, "course_list.json", course_list)
 
+    create_and_save_indexes(data_path, course_departments, courses)
+
 
 def create_course_departments_list(course_departments):
     course_departments_list = []
@@ -57,6 +59,30 @@ def create_course_list(courses):
             "label": label
         })
     return course_list
+
+
+def create_and_save_indexes(data_path, course_departments, courses):
+    department_index = create_department_index(course_departments, courses)
+    save_data(data_path, "department_index.json", department_index)
+
+    ge_index = create_ge_index(courses)
+    save_data(data_path, "ge_index.json", ge_index)
+
+
+def create_department_index(course_departments, courses):
+    department_index = {course_department_name: [courses[course] for course in course_department["courses"]]
+                        for course_department_name, course_department in course_departments.items()}
+    return department_index
+
+
+def create_ge_index(courses):
+    ges = ("Ia", "Ib", "II", "III", "IV", "Va", "Vb", "VI", "VII", "VIII")
+    ge_index = {ge: [] for ge in ges}
+    for course in courses.values():
+        for course_ge in course["ge_categories"]:
+            if course_ge in ge_index:
+                ge_index[course_ge].append(course)
+    return ge_index
 
 
 def scrape_and_save_degrees(soup_cache, data_path):

@@ -29,9 +29,9 @@ def scrape_course_department(soup_cache, url):
     courses = parse_courses(soup)
 
     # add courses to departments
-    course_department["classes"] = []
+    course_department["courses"] = []
     for course in courses.values():
-        course_department["classes"].append(course["id"])
+        course_department["courses"].append(course["id"])
 
     return course_department, courses
 
@@ -132,5 +132,5 @@ def parse_course_info(course_div):
         "corequisite": corequisite,
         "prerequisite_tree": prerequisite_tree,
         "same_as": same_as,
-        "ge_cateogires": ge_categories
+        "ge_categories": ge_categories
     }

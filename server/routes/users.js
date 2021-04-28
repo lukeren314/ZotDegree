@@ -14,9 +14,9 @@ router.post("/loadUserData", async (req, res) => {
     const data = await User.findById(userKey);
     if (data === null) {
       res.status(500).json({ error: `Course plan for ${userKey} not found!` });
-    } else {
-      res.status(200).send({ userKey: data._id, userData: data.userData });
+      return;
     }
+    res.status(200).send({ userKey: data._id, userData: data.userData });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
