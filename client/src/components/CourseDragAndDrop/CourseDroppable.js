@@ -25,6 +25,7 @@ function CourseDroppable(props) {
           ref={provided.innerRef}
           style={getListStyle(snapshot.isDraggingOver, backgroundColor)}
         >
+          {/* convert to virtual list? */}
           {courses.map((course, index) => (
             <CourseDraggable
               key={course.id}

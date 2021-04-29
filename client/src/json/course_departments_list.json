@@ -1,4 +1,5 @@
 [
+  { "value": "ALL", "label": "ALL Departments" },
   { "value": "AC ENG", "label": "AC ENG Academic English and ESL" },
   { "value": "AFAM", "label": "AFAM African American Studies" },
   { "value": "ANATOMY", "label": "ANATOMY Anatomy and Neurobiology" },

@@ -37,7 +37,7 @@ class ToolPanels extends PureComponent {
       // CourseSearchPanel
       department: departmentsList[0],
       courseNumber: "",
-      geCategory: "N/A",
+      geCategories: [],
     };
 
     this.setTab = this.setTab.bind(this);
@@ -47,7 +47,7 @@ class ToolPanels extends PureComponent {
     this.setSectionOpen = this.setSectionOpen.bind(this);
     this.setDepartment = this.setDepartment.bind(this);
     this.setCourseNumber = this.setCourseNumber.bind(this);
-    this.setGECategory = this.setGECategory.bind(this);
+    this.setGECategories = this.setGECategories.bind(this);
     this.searchQuery = this.searchQuery.bind(this);
   }
   setTab(event, newTab) {
@@ -132,19 +132,23 @@ class ToolPanels extends PureComponent {
     this.setState({ department: newDepartment });
   }
   setCourseNumber(event) {
-    const newCourseNumber = event.target.value;
-    if (!newCourseNumber.match(/^[0-9]+[A-Za-z]* ?(- ?[0-9]+[A-Za-z]*)?$/g)) {
+    this.setState({ courseNumber: event.target.value });
+  }
+  setGECategories(event, newGECategories) {
+    this.setState({ geCategories: newGECategories });
+  }
+  searchQuery() {
+    const { department, courseNumber, geCategories } = this.state;
+    if (department.value === "ALL" && geCategories.length === 0) {
+      this.props.openAlert("You must specify GE Categories!");
+      return;
+    }
+
+    if (!courseNumber.match(/^([0-9]+[A-Za-z]* ?(- ?[0-9]+[A-Za-z]*)?)?$/g)) {
       this.props.openAlert("Course number/range invalid!");
       return;
     }
-    this.setState({ courseNumber: event.target.value });
-  }
-  setGECategory(event, newGECategory) {
-    this.setState({ geCategory: newGECategory });
-  }
-  searchQuery() {
-    const { department, courseNumber, geCategory } = this.state;
-    const query = { department, courseNumber, geCategory };
+    const query = { department: department.value, courseNumber, geCategories };
     this.props.searchCourses(query);
   }
   render() {
@@ -152,11 +156,10 @@ class ToolPanels extends PureComponent {
       currentTab,
       department,
       courseNumber,
-      geCategory,
+      geCategories,
       requirements,
       degrees,
     } = this.state;
-    const { courseSearchList } = this.props;
     return (
       <div>
         <ToolPanelMenu currentTab={currentTab} setTab={this.setTab} />
@@ -178,7 +181,7 @@ class ToolPanels extends PureComponent {
           </ToolPanel>
           <ToolPanel value={currentTab} index={1}>
             <CourseSearchPanel
-              courseSearchList={courseSearchList}
+              courseSearchList={this.props.courseSearchList}
               searchCourses={this.searchQuery}
               departmentsList={departmentsList}
               geCategoriesList={geCategoriesList}
@@ -186,8 +189,8 @@ class ToolPanels extends PureComponent {
               setDepartment={this.setDepartment}
               courseNumber={courseNumber}
               setCourseNumber={this.setCourseNumber}
-              geCategory={geCategory}
-              setGECategory={this.setGECategory}
+              geCategories={geCategories}
+              setGECategories={this.setGECategories}
             />
           </ToolPanel>
         </div>

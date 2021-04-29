@@ -13,6 +13,7 @@ import {
   DEFAULT_YEARS,
   DEFAULT_START_YEAR,
 } from "./courseLogic";
+import { searchCourses } from "../../api.js";
 
 class CoursePlanner extends PureComponent {
   constructor(props) {
@@ -40,9 +41,7 @@ class CoursePlanner extends PureComponent {
   setStartYear(event) {
     this.setState({ startYear: event.target.value });
   }
-  componentDidMount() {
-    this.addCourses(0, "Fall", ["CS 121", "CS 171", "CS 178"]);
-  }
+  componentDidMount() {}
   addCourses(year, quarter, courses) {
     let courseDroppableObjects = this.getCourseDroppables(courses);
     this.setState({
@@ -59,18 +58,7 @@ class CoursePlanner extends PureComponent {
     return courses.map((course) => {
       return {
         id: this.draggableIdManager.getNextId(),
-        content: {
-          id: course,
-          department: "AC ENG",
-          number: "20A",
-          name: "Academic Writing",
-          units: "5",
-          prerequisite: "Placement into AC ENG 20A.",
-          corequisite: "",
-          prerequisite_tree: "",
-          same_as: "",
-          ge_cateogires: [],
-        },
+        content: course,
       };
     });
   }
@@ -111,30 +99,19 @@ class CoursePlanner extends PureComponent {
     }
     return courses;
   }
-  searchCourses(query) {
-    let courseSearchList = this.getCourseDroppables([
-      "CS 151",
-      "ICS 53",
-      "SOC 2",
-      "ICS 6B",
-      "ICS 6D",
-      "ICS 10A",
-      "CS 123",
-      "CS 114",
-      "CS 151345",
-    ]);
-    this.setState({
-      courseSearchList: courseSearchList,
-    });
+  async searchCourses(query) {
+    try {
+      // start loading?
+      const jsonData = await searchCourses(query);
+      const courseSearchList = this.getCourseDroppables(jsonData);
+      this.setState({ courseSearchList: courseSearchList });
+      // end loading
+    } catch (error) {
+      this.props.openAlert("Course Search Failed! " + error, "error");
+    }
   }
   render() {
-    const {
-      numYears,
-      startYear,
-      yearPlans,
-      courseSearchList,
-      openAlert,
-    } = this.state;
+    const { numYears, startYear, yearPlans, courseSearchList } = this.state;
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Grid container style={{ height: "85vh" }}>
@@ -172,7 +149,7 @@ class CoursePlanner extends PureComponent {
             <ToolPanels
               courseSearchList={courseSearchList}
               searchCourses={this.searchCourses}
-              openAlert={openAlert}
+              openAlert={this.props.openAlert}
             />
           </Grid>
         </Grid>

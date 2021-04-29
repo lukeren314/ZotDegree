@@ -70,7 +70,7 @@ def create_and_save_indexes(data_path, course_departments, courses):
 
 
 def create_department_index(course_departments, courses):
-    department_index = {course_department_name: [courses[course] for course in course_department["courses"]]
+    department_index = {course_department_name: [course for course in course_department["courses"]]
                         for course_department_name, course_department in course_departments.items()}
     return department_index
 
@@ -81,7 +81,7 @@ def create_ge_index(courses):
     for course in courses.values():
         for course_ge in course["ge_categories"]:
             if course_ge in ge_index:
-                ge_index[course_ge].append(course)
+                ge_index[course_ge].append(course["id"])
     return ge_index
 
 

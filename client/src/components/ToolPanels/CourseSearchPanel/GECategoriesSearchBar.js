@@ -2,18 +2,21 @@ import { Autocomplete } from "@material-ui/lab";
 import { TextField } from "@material-ui/core";
 
 function GECategoriesSearchBar(props) {
-  const { geCategory, geCategoriesList, setGECategory } = props;
+  const { geCategories, geCategoriesList, setGECategories } = props;
   return (
     <div>
       <Autocomplete
-        value={geCategory}
+        multiple
+        value={geCategories}
         options={geCategoriesList}
         getOptionLabel={(option) => option.label}
         getOptionSelected={(option, selected) =>
           option.value === selected.value
         }
-        onChange={setGECategory}
-        renderInput={(params) => <TextField {...params} label="GE Category" />}
+        onChange={setGECategories}
+        renderInput={(params) => (
+          <TextField {...params} label="GE Categories" />
+        )}
       />
     </div>
   );

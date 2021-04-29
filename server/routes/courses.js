@@ -1,82 +1,126 @@
-const departmentIndex = require("../../crawler/datasets/department_index.json");
-const geIndex = require("../../crawler/datasets/ge_index.json");
-
 const express = require("express");
 const router = express.Router();
 
+console.log("Setting up course indexes");
+const departmentIndex = toIndex(
+  require("../../crawler/datasets/department_index.json")
+);
+const geIndex = toIndex(require("../../crawler/datasets/ge_index.json"));
+const coursesIndex = require("../../crawler/datasets/courses.json");
+
+function toIndex(data) {
+  let index = {};
+  for (let key in data) {
+    index[key] = new Set(data[key]);
+  }
+  return index;
+}
+
 router.post("/search", (req, res) => {
   try {
-    const { department, courseNum, geCategory } = req.body;
-    if (
-      department === undefined ||
-      geCategory === undefined ||
-      (department === "ALL" && geCategory === "N/A")
-    ) {
+    const { department, courseNumber, geCategories } = req.body;
+    if (department === "ALL" && geCategories === []) {
       res.status(400).json({ error: "Missing department/geCategory" });
     }
-    const courses = queryCourses(department, courseNum, geCategory);
-    if (courses === null) {
+    const queriedCourses = queryCourses(department, courseNumber, geCategories);
+    if (queriedCourses === null) {
       res.status(500).json({
-        error: `Courses for department ${department} and GE Category ${geCategory} not found`,
+        error: `Courses for department ${department} and GE Category ${geCategories} not found`,
       });
       return;
     }
-    res.status(200).send(courses);
+    res.status(200).send(queriedCourses);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-function queryCourses(department, courseNum, geCategory) {
+function queryCourses(department, courseNum, geCategories) {
   if (!(department in departmentIndex)) {
     return null;
   }
-  let courses = getCoursesList(department, geCategory);
-  if (!courseNum) {
-    return courses;
+  let courseIds = getCourseIds(department, geCategories);
+  if (courseNum) {
+    courseIds = getMatchedIds(courseIds, courseNum);
   }
-  let matchedCourses = [];
-  if (
-    courseNum.match(/^([0-9]+[A-Za-z]* ?(- ?[0-9]+[A-Za-z]*)?)?$/g) &&
-    courseNum.contains("-")
-  ) {
-    let tokens = courseNum.split("-");
-    let bottomRange = parseInt(tokens[0]);
-    let topRange = parseInt(tokens[1]);
-    for (let course of courses) {
-      let num = parseInt(course.number);
-      if (num >= bottomRange && num <= topRange) {
-        matchedCourses.push(course);
-      }
-    }
-    return matchedCourses;
-  }
-  for (let course of courses) {
-    if (course.number === courseNum) {
-      matchedCourses.push(course);
-    }
-  }
-  return matchedCourses;
+  let courses = getCourses(courseIds);
+  return courses;
 }
 
-function getCoursesList(department, geCategory) {
+function getCourseIds(department, geCategories) {
   if (department === "ALL") {
-    if (!(geCategory in geIndex)) {
-      return [];
+    return getGeCategoryIds(geCategories);
+  }
+  if (!(department in departmentIndex)) {
+    return [];
+  }
+  let courseIdsSet = departmentIndex[department];
+  for (let ge of geCategories) {
+    if (!(ge in geIndex)) {
+      continue;
     }
-    return geIndex[geCategory];
+    courseIdsSet = new Set([...courseIdsSet].filter((x) => geIndex[ge].has(x)));
   }
-  let courses = departmentIndex[department];
-  if (geCategory == "N/A") {
-    return courses;
+  return [...courseIdsSet];
+}
+
+function getGeCategoryIds(geCategories) {
+  let courseIdsSet = geIndex[geCategories[0]];
+  for (let i = 1; i < geCategories.length; ++i) {
+    courseIdsSet = new Set(
+      [...courseIdsSet].filter((x) => geIndex[geCategories[i]].has(x))
+    );
   }
-  let matchedCourses = [];
-  for (let course of courses) {
-    if (course.ge_categories.includes(geCategory)) {
-      matchedCourses.push(course);
+  return [...courseIdsSet];
+}
+
+function getMatchedIds(courseIds, courseNum) {
+  if (!courseNum.match(/^([0-9]+[A-Za-z]* ?(- ?[0-9]+[A-Za-z]*)?)?$/g)) {
+    return [];
+  }
+  if (courseNum.includes("-")) {
+    return matchRange(courseIds, courseNum);
+  }
+  return matchId(courseIds, courseNum);
+}
+
+function matchRange(courseIds, courseNum) {
+  let matchedIds = [];
+  let tokens = courseNum.split("-");
+  let bottomRange = parseInt(tokens[0]);
+  let topRange = parseInt(tokens[1]);
+  for (let courseId of courseIds) {
+    let num = parseInt(getCourseNumber(courseId));
+    if (num >= bottomRange && num <= topRange) {
+      matchedIds.push(courseId);
     }
   }
-  return matchedCourses;
+  return matchedIds;
+}
+
+function matchId(courseIds, courseNum) {
+  let matchedIds = [];
+  for (let courseId of courseIds) {
+    if (getCourseNumber(courseId) === courseNum) {
+      matchedIds.push(courseId);
+    }
+  }
+  return matchedIds;
+}
+
+function getCourseNumber(courseId) {
+  let tokens = courseId.split(" ");
+  return tokens[tokens.length - 1];
+}
+
+function getCourses(courseIds) {
+  let courses = [];
+  for (let courseId of courseIds) {
+    if (courseId in coursesIndex) {
+      courses.push(coursesIndex[courseId]);
+    }
+  }
+  return courses;
 }
 
 module.exports = router;

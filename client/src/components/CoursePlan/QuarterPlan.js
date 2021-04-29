@@ -15,7 +15,7 @@ function QuarterPlan(props) {
   );
   return (
     <Grid item>
-      <Typography>
+      <Typography style={{ backgroundColor: "silver" }}>
         <span>{quarter}</span>
         <span style={{ float: "right", textAlign: "right", fontSize: "12px" }}>
           {numUnits + " Units"}

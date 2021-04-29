@@ -80,7 +80,7 @@ class CourseDraggable extends PureComponent {
                     secondary={(course.content.units || 0) + " Units"}
                     secondaryTypographyProps={{
                       variant: "caption",
-                      color: "white",
+                      style: { color: "white" },
                     }}
                   />
                   <ListItemSecondaryAction

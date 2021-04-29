@@ -80,7 +80,7 @@ function addCourse(
 ) {
   // don't add if it's already present
   let course = courseSearchList[source.index];
-  if (findCourseById(course.content)) {
+  if (findCourseById(yearPlans, course.content.id)) {
     openAlert("This class was already added!", "error");
     return yearPlans;
   }
