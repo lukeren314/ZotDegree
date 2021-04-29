@@ -15,3 +15,14 @@ export async function searchCourses(query) {
     .catch((error) => console.log("Error: ", error));
   return json;
 }
+
+export async function getRequirements(degrees) {
+  const json = await fetch(setEndpointHost("/api/requirements/"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ degreeNames: degrees }),
+  })
+    .then((resp) => resp.json())
+    .catch((error) => console.log("Error: ", error));
+  return json;
+}

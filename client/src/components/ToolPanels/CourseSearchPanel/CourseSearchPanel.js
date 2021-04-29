@@ -16,6 +16,7 @@ function CourseSearchPanel(props) {
     setGECategories,
     searchCourses,
     courseSearchList,
+    isLoading,
   } = props;
   return (
     <div>
@@ -46,7 +47,7 @@ function CourseSearchPanel(props) {
       >
         Search
       </Button>
-      <CourseSearchList courseList={courseSearchList} />
+      <CourseSearchList courseList={courseSearchList} isLoading={isLoading} />
     </div>
   );
 }

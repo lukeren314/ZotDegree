@@ -3,10 +3,10 @@ import { Box } from "@material-ui/core";
 import CourseSearchPanel from "./CourseSearchPanel/CourseSearchPanel";
 import DegreeRequirementsPanel from "./DegreeRequirementsPanel/DegreeRequirementsPanel";
 import ToolPanelMenu from "./ToolPanelMenu";
-import testRequirements from "../../json/test_requirements.json";
 import geCategoriesList from "../../json/ge_categories.json";
 import departmentsList from "../../json/course_departments_list.json";
 import degreesList from "../../json/degrees_list.json";
+import { getRequirements } from "../../api";
 
 const MAX_DEGREES = 10;
 
@@ -33,6 +33,7 @@ class ToolPanels extends PureComponent {
       // DegreeRequirementsPanel
       degrees: [],
       requirements: [],
+      isLoading: false,
 
       // CourseSearchPanel
       department: departmentsList[0],
@@ -49,6 +50,8 @@ class ToolPanels extends PureComponent {
     this.setCourseNumber = this.setCourseNumber.bind(this);
     this.setGECategories = this.setGECategories.bind(this);
     this.searchQuery = this.searchQuery.bind(this);
+    this.startLoading = this.startLoading.bind(this);
+    this.stopLoading = this.stopLoading.bind(this);
   }
   setTab(event, newTab) {
     this.setState({ currentTab: newTab });
@@ -59,7 +62,7 @@ class ToolPanels extends PureComponent {
       return;
     }
     this.setState({ degrees: newDegrees });
-    this.getNewRequirements(newDegrees);
+    this.getNewRequirements(newDegrees.map((degree) => degree.value));
   }
   setListOpen(degreeIndex, index, isOpen) {
     const requirements = this.state.requirements;
@@ -107,26 +110,23 @@ class ToolPanels extends PureComponent {
     console.log(newDegreeRequirements);
     this.setState({ requirements: newDegreeRequirements });
   }
-  getNewRequirements(newDegrees) {
-    let newDegreesRequirements = [testRequirements];
-    for (let degreeRequirement of newDegreesRequirements) {
-      for (let i = 0; i < degreeRequirement.requirementsLists.length; ++i) {
-        degreeRequirement.requirementsLists[i].open = false;
-        for (
-          let j = 0;
-          j < degreeRequirement.requirementsLists[i].requirements.length;
-          ++j
-        ) {
-          if (
-            degreeRequirement.requirementsLists[i].requirements[j].type ===
-            "section"
-          ) {
-            degreeRequirement.requirementsLists[i].requirements[j].open = false;
-          }
-        }
-      }
+  async getNewRequirements(newDegrees) {
+    try {
+      this.startLoading(async () => {
+        let jsonData = await getRequirements(newDegrees);
+        console.log(jsonData);
+        this.stopLoading();
+        this.setState({ requirements: jsonData });
+      });
+    } catch (error) {
+      this.props.openAlert("Get requirements failed! " + error, "error");
     }
-    this.setState({ requirements: newDegreesRequirements });
+  }
+  startLoading(callback) {
+    this.setState({ isLoading: true }, callback);
+  }
+  stopLoading() {
+    this.setState({ isLoading: false });
   }
   setDepartment(event, newDepartment) {
     this.setState({ department: newDepartment });
@@ -140,7 +140,7 @@ class ToolPanels extends PureComponent {
   searchQuery() {
     const { department, courseNumber, geCategories } = this.state;
     if (department.value === "ALL" && geCategories.length === 0) {
-      this.props.openAlert("You must specify GE Categories!");
+      this.props.openAlert("You must specify a department or GE Categories!");
       return;
     }
 
@@ -159,7 +159,9 @@ class ToolPanels extends PureComponent {
       geCategories,
       requirements,
       degrees,
+      isLoading,
     } = this.state;
+
     return (
       <div>
         <ToolPanelMenu currentTab={currentTab} setTab={this.setTab} />
@@ -177,6 +179,7 @@ class ToolPanels extends PureComponent {
               setListOpen={this.setListOpen}
               setSectionOpen={this.setSectionOpen}
               degreesList={degreesList}
+              isLoading={isLoading}
             />
           </ToolPanel>
           <ToolPanel value={currentTab} index={1}>
@@ -191,6 +194,7 @@ class ToolPanels extends PureComponent {
               setCourseNumber={this.setCourseNumber}
               geCategories={geCategories}
               setGECategories={this.setGECategories}
+              isLoading={this.props.isLoadingCourseSearch}
             />
           </ToolPanel>
         </div>

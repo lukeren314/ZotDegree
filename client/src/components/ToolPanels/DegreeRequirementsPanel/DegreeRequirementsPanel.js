@@ -1,3 +1,4 @@
+import { Fade, CircularProgress } from "@material-ui/core";
 import DegreeSearchBar from "./DegreeSearchBar";
 import DegreeRequirements from "./DegreeRequirements";
 
@@ -9,6 +10,7 @@ function DegreeRequirementsPanel(props) {
     requirements,
     setListOpen,
     setSectionOpen,
+    isLoading,
   } = props;
   return (
     <div>
@@ -18,6 +20,15 @@ function DegreeRequirementsPanel(props) {
         setDegrees={setDegrees}
       />
       <div style={{ overflow: "auto", height: "70vh" }}>
+        <Fade
+          in={isLoading}
+          style={{
+            transitionDelay: isLoading ? "80ms" : "0ms",
+          }}
+          unmountOnExit
+        >
+          <CircularProgress />
+        </Fade>
         <DegreeRequirements
           requirements={requirements}
           setListOpen={setListOpen}

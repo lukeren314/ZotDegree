@@ -4,15 +4,15 @@ const schools = require("../../crawler/datasets/schools.json");
 const express = require("express");
 const router = express.Router();
 
-router.get("/:degreeName", async (req, res) => {
+router.post("/", (req, res) => {
   try {
-    if (!req.params.degreeName) {
-      res.status(400).json({ error: "Missing degreeName" });
+    if (!req.body.degreeNames) {
+      res.status(400).json({ error: "Missing degree names" });
     }
-    const requirements = getRequirements(req.params.degreeName);
+    const requirements = getRequirements(req.body.degreeNames);
     if (requirements === null) {
       res.status(500).json({
-        error: `Requirements for degree ${req.params.degreeName} not found`,
+        error: `Requirements for degrees ${req.body.degreeNames} not found`,
       });
       return;
     }
@@ -22,24 +22,32 @@ router.get("/:degreeName", async (req, res) => {
   }
 });
 
-function getRequirements(degreeName) {
-  if (!(degreeName in degrees)) {
-    return null;
+function getRequirements(degreeNames) {
+  let requirements = [];
+  let schoolNames = [];
+  for (let degreeName of degreeNames) {
+    if (!(degreeName in degrees)) {
+      continue;
+    }
+    const degree = degrees[degreeName];
+    requirements.push({
+      name: degree.name,
+      requirementsLists: degree.requirements,
+    });
+    if (
+      degree.school in schools &&
+      schools[degree.school].requirements.length > 0 &&
+      !schoolNames.includes(degree.school)
+    ) {
+      schoolNames.push(degree.school);
+    }
   }
-  let requirements = {
-    degreeRequirements: [],
-    schoolName: "",
-    schoolRequirements: [],
-  };
-  const degree = degrees[degreeName];
-  requirements.degreeRequirements = degree.requirements;
-  if (!(degree.school in schools)) {
-    return null;
+  for (let schoolName of schoolNames) {
+    requirements.push({
+      name: schoolName,
+      requirementsLists: schools[schoolName],
+    });
   }
-  const school = schools[degree.school];
-  requirements.schoolName = school.name;
-  requirements.schoolRequirements = school.requirements;
-
   return requirements;
 }
 

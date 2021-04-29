@@ -5,7 +5,9 @@ from util.urls import get_clean_text
 def parse_requirements(soup):
     reqstextcontainer = soup.find(id="requirementstextcontainer")
     if not reqstextcontainer:
-        return {}
+        reqstextcontainer = soup.find(id="schoolrequirementstextcontainer")
+    if not reqstextcontainer:
+        return []
     requirements = parse_requirements_text_container(reqstextcontainer)
     return requirements
 
@@ -78,9 +80,8 @@ def pick_header_text(potential_headers, toggleheads, i):
                 header = potential_header
                 header_text = str(header)
                 break
-
     if not header:
-        header_text = "Major Requirements"
+        header_text = "Requirements"
     return header_text
 
 
@@ -234,9 +235,16 @@ def test_requirements_spanish_minor(soup_cache):
     requirements = parse_requirements(soup)
 
 
+def test_requirements_biosci_school(soup_cache):
+    soup = soup_cache.get_soup(
+        "http://catalogue.uci.edu/schoolofbiologicalsciences/#schoolrequirementstext")
+    requirements = parse_requirements(soup)
+
+
 if __name__ == "__main__":
     from soupcache import SoupCache
     soup_cache = SoupCache()
 
     # test_requirements_computer_science(soup_cache)
-    test_requirements_spanish_minor(soup_cache)
+    # test_requirements_spanish_minor(soup_cache)
+    test_requirements_biosci_school(soup_cache)

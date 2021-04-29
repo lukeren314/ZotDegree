@@ -15,6 +15,7 @@ function CoursePopover(props) {
       transformOrigin={{ vertical: "top", horizontal: "left" }}
       open={Boolean(anchorEl)}
       onClose={handleClose}
+      disableRestoreFocus
     >
       <div className={classes.courseInfo}>
         <Typography variant="subtitle1">
@@ -31,7 +32,7 @@ function CoursePopover(props) {
           Same as: {course.same_as || "N/A"}
         </Typography>
         <Typography variant="subtitle2">
-          GE Categories: {course.ge_categories || "N/A"}
+          GE Categories: {course.ge_categories.join(", ") || "N/A"}
         </Typography>
       </div>
     </Popover>

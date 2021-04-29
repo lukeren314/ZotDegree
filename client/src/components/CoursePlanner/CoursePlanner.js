@@ -24,6 +24,7 @@ class CoursePlanner extends PureComponent {
       courseSearchList: null,
       numYears: DEFAULT_YEARS,
       startYear: DEFAULT_START_YEAR,
+      isLoadingCourseSearch: false,
     };
 
     this.draggableIdManager = new DraggableIdManager();
@@ -34,6 +35,8 @@ class CoursePlanner extends PureComponent {
     this.setNumYears = this.setNumYears.bind(this);
     this.setStartYear = this.setStartYear.bind(this);
     this.deleteCourse = this.deleteCourse.bind(this);
+    this.startLoading = this.startLoading.bind(this);
+    this.stopLoading = this.stopLoading.bind(this);
   }
   setNumYears(event) {
     this.setState({ numYears: event.target.value });
@@ -41,7 +44,6 @@ class CoursePlanner extends PureComponent {
   setStartYear(event) {
     this.setState({ startYear: event.target.value });
   }
-  componentDidMount() {}
   addCourses(year, quarter, courses) {
     let courseDroppableObjects = this.getCourseDroppables(courses);
     this.setState({
@@ -101,17 +103,30 @@ class CoursePlanner extends PureComponent {
   }
   async searchCourses(query) {
     try {
-      // start loading?
-      const jsonData = await searchCourses(query);
-      const courseSearchList = this.getCourseDroppables(jsonData);
-      this.setState({ courseSearchList: courseSearchList });
-      // end loading
+      this.startLoading(async () => {
+        const jsonData = await searchCourses(query);
+        const courseSearchList = this.getCourseDroppables(jsonData);
+        this.stopLoading();
+        this.setState({ courseSearchList: courseSearchList });
+      });
     } catch (error) {
       this.props.openAlert("Course Search Failed! " + error, "error");
     }
   }
+  startLoading(callback) {
+    this.setState({ isLoadingCourseSearch: true }, callback);
+  }
+  stopLoading() {
+    this.setState({ isLoadingCourseSearch: false });
+  }
   render() {
-    const { numYears, startYear, yearPlans, courseSearchList } = this.state;
+    const {
+      numYears,
+      startYear,
+      yearPlans,
+      courseSearchList,
+      isLoadingCourseSearch,
+    } = this.state;
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Grid container style={{ height: "85vh" }}>
@@ -150,6 +165,7 @@ class CoursePlanner extends PureComponent {
               courseSearchList={courseSearchList}
               searchCourses={this.searchCourses}
               openAlert={this.props.openAlert}
+              isLoadingCourseSearch={isLoadingCourseSearch}
             />
           </Grid>
         </Grid>
