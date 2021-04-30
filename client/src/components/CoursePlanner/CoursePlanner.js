@@ -105,12 +105,16 @@ class CoursePlanner extends PureComponent {
     try {
       this.startLoading(async () => {
         const jsonData = await searchCourses(query);
-        const courseSearchList = this.getCourseDroppables(jsonData);
         this.stopLoading();
+        if (jsonData == null || "error" in jsonData) {
+          this.props.openAlert("Course Search Failed! ", "error");
+          return;
+        }
+        const courseSearchList = this.getCourseDroppables(jsonData);
         this.setState({ courseSearchList: courseSearchList });
       });
     } catch (error) {
-      this.props.openAlert("Course Search Failed! " + error, "error");
+      this.props.openAlert("Course Search Failed! ", "error");
     }
   }
   startLoading(callback) {

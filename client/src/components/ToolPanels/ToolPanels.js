@@ -82,7 +82,6 @@ class ToolPanels extends PureComponent {
     this.setState({ requirements: newRequirements });
   }
   setSectionOpen(degreeIndex, listIndex, index, isOpen) {
-    console.log(degreeIndex, listIndex, index);
     const requirements = this.state.requirements;
     let newRequirementsSection = {
       ...requirements[degreeIndex].requirementsLists[listIndex].requirements[
@@ -107,19 +106,21 @@ class ToolPanels extends PureComponent {
       ...newDegreeRequirements[degreeIndex],
       requirementsLists: newRequirementsLists,
     };
-    console.log(newDegreeRequirements);
     this.setState({ requirements: newDegreeRequirements });
   }
   async getNewRequirements(newDegrees) {
     try {
       this.startLoading(async () => {
         let jsonData = await getRequirements(newDegrees);
-        console.log(jsonData);
         this.stopLoading();
+        if (jsonData == null || "error" in jsonData) {
+          this.props.openAlert("Get requirements Failed!", "error");
+          return;
+        }
         this.setState({ requirements: jsonData });
       });
     } catch (error) {
-      this.props.openAlert("Get requirements failed! " + error, "error");
+      this.props.openAlert("Get requirements failed!", "error");
     }
   }
   startLoading(callback) {

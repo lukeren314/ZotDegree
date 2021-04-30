@@ -11,6 +11,7 @@ function DegreeRequirementsLists(props) {
     setListOpen,
     setSectionOpen,
   } = props;
+  console.log(requirements);
   return (
     <List>
       {requirements.map((item, index) => {

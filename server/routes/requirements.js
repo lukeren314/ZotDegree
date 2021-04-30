@@ -45,7 +45,7 @@ function getRequirements(degreeNames) {
   for (let schoolName of schoolNames) {
     requirements.push({
       name: schoolName,
-      requirementsLists: schools[schoolName],
+      requirementsLists: schools[schoolName].requirements,
     });
   }
   return requirements;
