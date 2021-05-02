@@ -7,7 +7,7 @@ function CourseRequirement(props) {
   return (
     <Fragment>
       <Divider />
-      <CourseRequirementItem requirement={requirement} />
+      <CourseRequirementItem dense={true} requirement={requirement} />
       <Divider />
     </Fragment>
   );

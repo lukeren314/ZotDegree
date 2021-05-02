@@ -1,15 +1,13 @@
 import { Fragment } from "react";
-import { ListItem, ListItemText, Divider, Box } from "@material-ui/core";
+import { ListItem, ListItemText, Divider } from "@material-ui/core";
 
 function HeaderRequirement(props) {
   const { requirement } = props;
   return (
     <Fragment>
       <Divider />
-      <ListItem button>
-        <ListItemText>
-          <Box fontWeight={"fontWeightBold"}>{requirement.comment}</Box>
-        </ListItemText>
+      <ListItem dense={true} button>
+        <ListItemText primary={requirement.comment} primaryTypographyProps={{variant: "h5"}}/>
       </ListItem>
       <Divider />
     </Fragment>

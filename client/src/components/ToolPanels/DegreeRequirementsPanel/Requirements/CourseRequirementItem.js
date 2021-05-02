@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import {
   ListItem,
   ListItemText,
-  Box,
   ListItemSecondaryAction,
   Checkbox,
 } from "@material-ui/core";
@@ -13,9 +12,7 @@ function CourseRequirementItem(props) {
     <Fragment>
       {requirement.courses.map((course) => (
         <ListItem key={course} button>
-          <ListItemText>
-            <Box>{course}</Box>
-          </ListItemText>
+          <ListItemText primary={course} primaryTypographyProps={{variant:"body2"}}/>
           <ListItemSecondaryAction>
             <Checkbox checked={true} />
           </ListItemSecondaryAction>

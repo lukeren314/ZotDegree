@@ -25,6 +25,7 @@ function courseSearchContent(courseList, isLoading) {
     if (courseList.length === 0) {
       return <h2 style={{ textAlign: "center" }}>No Classes Found!</h2>;
     } else {
+      // include info on the right?
       return (
         <Grid item xs={3} s={3} md={3} lg={3} xl={3}>
           <CourseDroppable droppableId="course-search" courses={courseList} />

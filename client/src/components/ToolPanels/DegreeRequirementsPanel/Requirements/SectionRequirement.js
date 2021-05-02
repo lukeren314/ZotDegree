@@ -4,7 +4,6 @@ import {
   Collapse,
   ListItemText,
   Divider,
-  Box,
   ListItem,
 } from "@material-ui/core";
 import ExpandLess from "@material-ui/icons/ExpandLess";
@@ -34,9 +33,7 @@ function SectionRequirement(props) {
           )
         }
       >
-        <ListItemText>
-          <Box>{requirement.comment}</Box>
-        </ListItemText>
+        <ListItemText primary={requirement.comment}/>
         {requirement.open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={requirement.open} timeout="auto" unmountOnExit>

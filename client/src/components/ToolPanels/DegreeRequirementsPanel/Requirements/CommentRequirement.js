@@ -1,15 +1,13 @@
 import { Fragment } from "react";
-import { ListItem, ListItemText, Box, Divider } from "@material-ui/core";
+import { ListItem, ListItemText, Divider } from "@material-ui/core";
 
 function CommentRequirement(props) {
   const { requirement } = props;
   return (
     <Fragment>
       <Divider />
-      <ListItem>
-        <ListItemText>
-          <Box>{requirement.comment}</Box>
-        </ListItemText>
+      <ListItem dense={true}>
+        <ListItemText primary={requirement.comment} primaryTypographyProps={{variant:"body2"}}/>
       </ListItem>
       <Divider />
     </Fragment>

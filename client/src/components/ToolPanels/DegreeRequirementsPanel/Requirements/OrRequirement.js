@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { ListItem, ListItemText, Box, Divider } from "@material-ui/core";
+import { ListItem, ListItemText, Divider } from "@material-ui/core";
 import CourseRequirementItem from "./CourseRequirementItem";
 
 function OrRequirement(props) {
@@ -12,10 +12,8 @@ function OrRequirement(props) {
           <Fragment key={courseRequirement.courses[0] + "or" + index}>
             <CourseRequirementItem requirement={courseRequirement} />
             {index !== requirement.courses.length - 1 && (
-              <ListItem>
-                <ListItemText>
-                  <Box>or</Box>
-                </ListItemText>
+              <ListItem dense={true}>
+                <ListItemText primary="or"/>
               </ListItem>
             )}
           </Fragment>
