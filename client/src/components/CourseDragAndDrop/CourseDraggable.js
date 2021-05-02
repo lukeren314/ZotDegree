@@ -51,7 +51,7 @@ class CourseDraggable extends PureComponent {
     this.setState({ selected: null });
   }
   render() {
-    const { course, index, isDeletable, deleteCourse, classes } = this.props;
+    const { course, index, isDeletable, removeCourseById, classes } = this.props;
     return (
       <Draggable key={course.id} draggableId={course.id} index={index}>
         {(provided, snapshot) => (
@@ -92,7 +92,7 @@ class CourseDraggable extends PureComponent {
                         aria-label="delete"
                         size="small"
                         onClick={() => {
-                          deleteCourse(course.content, index);
+                          removeCourseById(course.content, index);
                         }}
                       >
                         <ClearIcon

@@ -9,7 +9,7 @@ function calculateTotalUnits(courses) {
 }
 
 function QuarterPlan(props) {
-  const { quarterPlan, year, quarter, deleteCourse } = props;
+  const { quarterPlan, year, quarter, removeCourseById } = props;
   let numUnits = calculateTotalUnits(
     quarterPlan.map((course) => course.content)
   );
@@ -25,7 +25,7 @@ function QuarterPlan(props) {
         droppableId={year + quarter}
         courses={quarterPlan}
         isDeletable={true}
-        deleteCourse={deleteCourse}
+        removeCourseById={removeCourseById}
       />
     </Grid>
   );

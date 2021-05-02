@@ -12,7 +12,10 @@ export async function searchCourses(query) {
     body: JSON.stringify(query),
   })
     .then((resp) => resp.json())
-    .catch((error) => console.log("Error: ", error));
+    .catch((error) => {
+      console.log("Error: ", error);
+      return null;
+    });
   return json;
 }
 
@@ -23,6 +26,9 @@ export async function getRequirements(degrees) {
     body: JSON.stringify({ degreeNames: degrees }),
   })
     .then((resp) => resp.json())
-    .catch((error) => console.log("Error: ", error));
+    .catch((error) => {
+      console.log("Error: ", error);
+      return null;
+    });
   return json;
 }

@@ -3,8 +3,18 @@ import { Grid, Typography } from "@material-ui/core";
 import QuarterPlan from "./QuarterPlan";
 import { QUARTERS } from "../CoursePlanner/courseLogic";
 
+function getQuarterPlans(yearPlan, quarters) {
+  // initialize each list to []
+  let quarterPlans = Object.fromEntries(quarters.map((quarter)=>[quarter, []]));
+  for (let course of yearPlan) {
+    quarterPlans[course.quarter].push(course);
+  }
+  return quarterPlans;
+}
+
 function YearPlan(props) {
-  const { year, yearPlan, startYear, deleteCourse } = props;
+  const { year, yearPlan, startYear, removeCourseById } = props;
+  const quarterPlans = getQuarterPlans(yearPlan, QUARTERS);
   const yearRange = `${parseInt(startYear) + parseInt(year)} - ${
     parseInt(startYear) + parseInt(year) + 1
   }`;
@@ -35,8 +45,8 @@ function YearPlan(props) {
             <QuarterPlan
               year={year}
               quarter={quarter}
-              quarterPlan={yearPlan[quarter]}
-              deleteCourse={deleteCourse}
+              quarterPlan={quarterPlans[quarter]}
+              removeCourseById={removeCourseById}
             />
           </Grid>
         ))}

@@ -16,7 +16,7 @@ function CourseDroppable(props) {
     courses,
     backgroundColor,
     isDeletable,
-    deleteCourse,
+    removeCourseById,
   } = props;
   return (
     <Droppable droppableId={droppableId} style={{ maxWidth: "100%" }}>
@@ -32,7 +32,7 @@ function CourseDroppable(props) {
               course={course}
               index={index}
               isDeletable={isDeletable}
-              deleteCourse={deleteCourse}
+              removeCourseById={removeCourseById}
             />
           ))}
           {provided.placeholder}
