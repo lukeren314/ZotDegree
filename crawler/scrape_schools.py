@@ -1,5 +1,5 @@
 from parse_requirements import parse_requirements
-from util.urls import get_header_text, get_urls
+from util.soups import get_header_text, get_urls
 
 
 SCHOOLS_DEPARTMENTS_URL = "http://catalogue.uci.edu/schoolsandprograms/"

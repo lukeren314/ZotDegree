@@ -1,6 +1,6 @@
 
 from util.logger import log_debug
-from util.urls import get_clean_text, get_header_text, get_urls
+from util.soups import get_clean_text, get_header_text, get_urls
 import re
 
 COURSES_URL = "http://catalogue.uci.edu/allcourses/"

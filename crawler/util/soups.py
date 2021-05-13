@@ -20,6 +20,10 @@ def get_header_text(soup):
     return header_text
 
 
+def get_clean_text(string):
+    return remove_non_breaking_spaces(string.strip())
+
+
 def get_hrefs(element):
     urls = []
     anchors = element.find_all("a")
@@ -27,10 +31,6 @@ def get_hrefs(element):
         relative_url = anchor.get("href")
         urls.append(relative_url)
     return urls
-
-
-def get_clean_text(string):
-    return remove_non_breaking_spaces(string.strip())
 
 
 def remove_non_breaking_spaces(string):

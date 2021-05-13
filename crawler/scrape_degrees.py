@@ -1,6 +1,6 @@
 from util.logger import log_debug
 from parse_requirements import parse_requirements
-from util.urls import get_urls, get_header_text, get_clean_text
+from util.soups import get_urls, get_header_text, get_clean_text
 
 
 DEGREES_URL = "http://catalogue.uci.edu/undergraduatedegrees/"
