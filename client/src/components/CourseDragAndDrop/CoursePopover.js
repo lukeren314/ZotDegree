@@ -6,6 +6,7 @@ const styles = (theme) => ({
     padding: theme.spacing(2),
   },
 });
+
 function CoursePopover(props) {
   const { anchorEl, handleClose, course, classes } = props;
   return (

@@ -1,8 +1,9 @@
 import { Autocomplete } from "@material-ui/lab";
 import { TextField } from "@material-ui/core";
+import degreesList from "../../json/degrees_list.json";
 
 function DegreeSearchBar(props) {
-  const { degrees, degreesList, setDegrees } = props;
+  const { degrees, setDegrees } = props;
   return (
     <div>
       <Autocomplete

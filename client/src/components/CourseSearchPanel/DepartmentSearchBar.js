@@ -1,8 +1,9 @@
 import { Autocomplete } from "@material-ui/lab";
 import { TextField } from "@material-ui/core";
+import departmentsList from "../../json/course_departments_list.json";
 
 function DepartmentSearchBar(props) {
-  const { department, departmentsList, setDepartment } = props;
+  const { department, setDepartment } = props;
   return (
     <div>
       <Autocomplete

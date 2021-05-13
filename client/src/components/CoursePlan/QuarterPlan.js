@@ -1,33 +1,37 @@
 import { Grid, Typography } from "@material-ui/core";
-
 import CourseDroppable from "../CourseDragAndDrop/CourseDroppable";
+import { withStyles } from "@material-ui/styles";
 
-function calculateTotalUnits(courses) {
+const styles = () => ({
+  quarterPlanHeader: {
+    backgroundColor: "silver",
+  },
+  quarterPlanUnits: { float: "right", textAlign: "right", fontSize: "12px" },
+});
+
+const calculateTotalUnits = (courses) => {
   return courses.reduce((total, course) => {
     return total + (course.units ? parseInt(course.units.split("-")[0]) : 0);
   }, 0);
-}
+};
 
 function QuarterPlan(props) {
-  const { quarterPlan, year, quarter, removeCourseById } = props;
+  const { quarterPlan, year, quarter, classes } = props;
   let numUnits = calculateTotalUnits(
     quarterPlan.map((course) => course.content)
   );
   return (
     <Grid item>
-      <Typography style={{ backgroundColor: "silver" }}>
+      <Typography className={classes.quarterPlanHeader}>
         <span>{quarter}</span>
-        <span style={{ float: "right", textAlign: "right", fontSize: "12px" }}>
-          {numUnits + " Units"}
-        </span>
+        <span className={classes.quarterPlanUnits}>{numUnits + " Units"}</span>
       </Typography>
       <CourseDroppable
         droppableId={year + quarter}
         courses={quarterPlan}
         isDeletable={true}
-        removeCourseById={removeCourseById}
       />
     </Grid>
   );
 }
-export default QuarterPlan;
+export default withStyles(styles)(QuarterPlan);

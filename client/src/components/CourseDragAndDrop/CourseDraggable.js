@@ -1,18 +1,11 @@
 import { PureComponent, Fragment } from "react";
-import {
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-} from "@material-ui/core";
+import { Paper, List, ListItem, ListItemText } from "@material-ui/core";
 import { Draggable } from "react-beautiful-dnd";
-import ClearIcon from "@material-ui/icons/Clear";
 import CoursePopover from "./CoursePopover";
 import { withStyles } from "@material-ui/styles";
+import CourseDeleteButton from "./CourseDeleteButton";
 
-const styles = (theme) => ({
+const styles = () => ({
   listItemSecondaryAction: {
     visibility: "hidden",
   },
@@ -23,18 +16,14 @@ const styles = (theme) => ({
   },
 });
 
-const getItemStyle = (isDragging, draggableStyle) => {
+const getItemStyle = (isDragging, draggableStyle, itemWidth) => {
   return {
-    // some basic styles to make the items look a bit nicer
     userSelect: "none",
     padding: 0,
     margin: `0 0 ${4}px 0`,
-    // width: "9vw",
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : "#0064a4",
     color: "white",
-
-    // styles we need to apply on draggables
+    background: isDragging ? "lightgreen" : "#0064a4",
+    width: itemWidth,
     ...draggableStyle,
   };
 };
@@ -42,16 +31,31 @@ const getItemStyle = (isDragging, draggableStyle) => {
 class CourseDraggable extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.setSelected = (event) => {
+      this.setState({selected: event.currentTarget})
+    }
+
+    this.handleClose = () => {
+      this.setState({ selected: null });
+    };
+
+    this.handleHovering = () => {
+      this.setState({ isHovering: true });
+    };
+
+    this.handleHoveringOut = () => {
+      this.setState({ isHovering: false });
+    };
+
     this.state = {
       selected: null,
+      isHovering: false,
     };
-    this.handleClose = this.handleClose.bind(this);
-  }
-  handleClose() {
-    this.setState({ selected: null });
   }
   render() {
-    const { course, index, isDeletable, removeCourseById, classes } = this.props;
+    const { course, index, isDeletable, itemWidth, classes } = this.props;
+    const { selected, isHovering } = this.state;
     return (
       <Draggable key={course.id} draggableId={course.id} index={index}>
         {(provided, snapshot) => (
@@ -62,51 +66,39 @@ class CourseDraggable extends PureComponent {
               {...provided.dragHandleProps}
               style={getItemStyle(
                 snapshot.isDragging,
-                provided.draggableProps.style
+                provided.draggableProps.style,
+                itemWidth
               )}
               variant="outlined"
-              onClick={(event) =>
-                this.setState({ selected: event.currentTarget })
-              }
+              onClick={this.setSelected}
+              onMouseOver={this.handleHovering}
+              onMouseOut={this.handleHoveringOut}
             >
               <List disablePadding={true}>
                 <ListItem
                   dense={true}
-                  classes={{ container: classes.listItem }}
-                  selected={Boolean(this.state.selected)}
+                  className={classes.listItem}
+                  selected={Boolean(selected)}
                 >
                   <ListItemText
                     primary={course.content.id}
-                    secondary={(course.content.units || 0) + " Units"}
+                    secondary={(isHovering && isDeletable) ? ((course.content.units || 0) + " Units") : null}
                     secondaryTypographyProps={{
                       variant: "caption",
                       style: { color: "white" },
                     }}
                   />
-                  <ListItemSecondaryAction
-                    className={classes.listItemSecondaryAction}
-                  >
-                    {isDeletable && (
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        size="small"
-                        onClick={() => {
-                          removeCourseById(course.content, index);
-                        }}
-                      >
-                        <ClearIcon
-                          fontSize="small"
-                          style={{ color: "white" }}
-                        />
-                      </IconButton>
-                    )}
-                  </ListItemSecondaryAction>
+                  <div className={classes.listItemSecondaryAction}>
+                    <CourseDeleteButton
+                      isDeletable={isDeletable}
+                      courseId={course.content.id}
+                    />
+                  </div>
                 </ListItem>
               </List>
             </Paper>
             <CoursePopover
-              anchorEl={this.state.selected}
+              anchorEl={selected}
               handleClose={this.handleClose}
               course={course.content}
             />

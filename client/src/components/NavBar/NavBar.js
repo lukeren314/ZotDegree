@@ -1,32 +1,68 @@
-import { AppBar, Button, Toolbar, Typography } from "@material-ui/core";
-import SaveLoadScheduleButtons from "./SaveLoadScheduleButtons";
-import SettingsIcon from "@material-ui/icons/Settings";
-import BugReportIcon from "@material-ui/icons/BugReport";
-import HelpIcon from "@material-ui/icons/Help";
+import {
+  AppBar,
+  Box,
+  CircularProgress,
+  Fade,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/styles";
+import SaveLoadButtons from "../NavBar/SaveLoadButtons";
+import AboutButton from "./AboutButton";
+import SuggestionsButton from "./SuggestionsButton";
 
-function NavBar() {
+const styles = () => ({
+  appBar: { marginBottom: "4px" },
+  appTitle: { paddingRight: "24px", paddingBottom: "4px" },
+});
+
+function NavBar(props) {
+  const {
+    userKey,
+    setUserKey,
+    rememberPassword,
+    setRememberPassword,
+    saveUserData,
+    loadUserData,
+    isLoadingUserDataSave,
+    changesSaved,
+    classes,
+  } = props;
   return (
-    <AppBar position="static" style={{ marginBottom: "4px" }}>
+    <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
-        <Typography
-          variant="h3"
-          style={{ paddingRight: "24px", paddingBottom: "4px" }}
-        >
+        <Typography color="secondary" variant="h3" className={classes.appTitle}>
           ZotDegree
         </Typography>
-
-        <SaveLoadScheduleButtons />
-        <Button color="inherit" startIcon={<SettingsIcon />}>
-          Settings
-        </Button>
-        <Button color="inherit" startIcon={<BugReportIcon />}>
-          Report Bugs
-        </Button>
-        <Button color="inherit" startIcon={<HelpIcon />}>
-          Help
-        </Button>
+        <SaveLoadButtons
+          userKey={userKey}
+          setUserKey={setUserKey}
+          rememberPassword={rememberPassword}
+          setRememberPassword={setRememberPassword}
+          saveUserData={saveUserData}
+          loadUserData={loadUserData}
+        />
+        <SuggestionsButton />
+        <AboutButton />
+        <Box style={{ marginLeft: "5px" }}>
+          {isLoadingUserDataSave ? (
+            <Fade
+              in={isLoadingUserDataSave}
+              style={{
+                transitionDelay: isLoadingUserDataSave ? "80ms" : "0ms",
+              }}
+              unmountOnExit
+            >
+              <CircularProgress color="secondary" />
+            </Fade>
+          ) : (
+            <Typography color="secondary" variant="caption">
+              {changesSaved ? "Changes Saved" : "*Unsaved changes"}
+            </Typography>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
   );
 }
-export default NavBar;
+export default withStyles(styles)(NavBar);

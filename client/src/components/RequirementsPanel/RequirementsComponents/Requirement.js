@@ -6,13 +6,7 @@ import CourseRequirement from "./CourseRequirement";
 import SectionRequirement from "./SectionRequirement";
 
 function Requirement(props) {
-  const {
-    requirement,
-    setSectionOpen,
-    degreeIndex,
-    listIndex,
-    requirementIndex,
-  } = props;
+  const { requirement } = props;
   let RequirementType;
   if (requirement.type === "header") {
     RequirementType = HeaderRequirement;
@@ -29,13 +23,7 @@ function Requirement(props) {
   }
   return (
     <Fragment>
-      <RequirementType
-        requirement={requirement}
-        setSectionOpen={setSectionOpen}
-        degreeIndex={degreeIndex}
-        listIndex={listIndex}
-        requirementIndex={requirementIndex}
-      />
+      <RequirementType requirement={requirement} />
     </Fragment>
   );
 }

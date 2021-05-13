@@ -9,4 +9,6 @@ class DraggableIdManager {
   }
 }
 
-export default DraggableIdManager;
+const idManager = new DraggableIdManager();
+
+export default idManager;

@@ -1,19 +1,34 @@
 import { Fragment } from "react";
 import { Grid, Typography } from "@material-ui/core";
 import QuarterPlan from "./QuarterPlan";
-import { QUARTERS } from "../CoursePlanner/courseLogic";
+import { withStyles } from "@material-ui/styles";
 
-function getQuarterPlans(yearPlan, quarters) {
+const QUARTERS = ["Fall", "Winter", "Spring", "Summer"];
+
+const styles = () => ({
+  yearPlanHeader: {
+    writingMode: "vertical-lr",
+    marginTop: "25px",
+    marginBottom: "25px",
+    // marginRight: "1px",
+    textAlign: "center",
+  },
+  yearPlanGrid: { background: "lightgray" },
+});
+
+const getQuarterPlans = (yearPlan, quarters) => {
   // initialize each list to []
-  let quarterPlans = Object.fromEntries(quarters.map((quarter)=>[quarter, []]));
+  let quarterPlans = Object.fromEntries(
+    quarters.map((quarter) => [quarter, []])
+  );
   for (let course of yearPlan) {
     quarterPlans[course.quarter].push(course);
   }
   return quarterPlans;
-}
+};
 
 function YearPlan(props) {
-  const { year, yearPlan, startYear, removeCourseById } = props;
+  const { year, yearPlan, startYear, classes } = props;
   const quarterPlans = getQuarterPlans(yearPlan, QUARTERS);
   const yearRange = `${parseInt(startYear) + parseInt(year)} - ${
     parseInt(startYear) + parseInt(year) + 1
@@ -24,13 +39,7 @@ function YearPlan(props) {
         <Grid item>
           <Typography
             key={year + "typography"}
-            style={{
-              writingMode: "vertical-lr",
-              marginTop: "25px",
-              marginBottom: "25px",
-              // marginRight: "1px",
-              textAlign: "center",
-            }}
+            className={classes.yearPlanHeader}
           >
             {yearRange}
           </Typography>
@@ -40,13 +49,12 @@ function YearPlan(props) {
             item
             xs
             key={year + quarter + "grid"}
-            style={{ background: "lightgray" }}
+            className={classes.yearPlanGrid}
           >
             <QuarterPlan
               year={year}
               quarter={quarter}
               quarterPlan={quarterPlans[quarter]}
-              removeCourseById={removeCourseById}
             />
           </Grid>
         ))}
@@ -55,4 +63,4 @@ function YearPlan(props) {
   );
 }
 
-export default YearPlan;
+export default withStyles(styles)(YearPlan);
