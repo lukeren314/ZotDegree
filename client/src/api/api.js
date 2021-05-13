@@ -2,7 +2,7 @@ function setEndpointHost(path) {
   if (process.env.NODE_ENV === "development") {
     return `http://localhost:8080${path}`;
   }
-  return `https://localhost:8080${path}`;
+  return `https://zotdegree.herokuapp.com${path}`;
 }
 
 export async function apiSearchCourses(query) {
