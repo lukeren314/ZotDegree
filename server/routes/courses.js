@@ -35,13 +35,28 @@ router.post("/search", (req, res) => {
   }
 });
 
+router.get("/getCourse/:courseId", (req, res) => {
+  try {
+    const course = getCourse(req.params.courseId);
+    if (course === null) {
+      res.status(500).json({
+        error: `Course with id ${courseId} not found.`,
+      });
+      return;
+    }
+    res.status(200).send({course: course});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 function queryCourses(department, courseNum, geCategories) {
   if (!(department in departmentIndex)) {
     return null;
   }
   let courseIds = getCourseIds(department, geCategories);
   if (courseNum) {
-    courseIds = getMatchedIds(courseIds, courseNum);
+    courseIds = getMatchedIds(courseIds, courseNum.toUpperCase());
   }
   let courses = getCourses(courseIds);
   return courses;
@@ -117,10 +132,14 @@ function getCourses(courseIds) {
   let courses = [];
   for (let courseId of courseIds) {
     if (courseId in coursesIndex) {
-      courses.push(coursesIndex[courseId]);
+      courses.push(getCourse(courseId));
     }
   }
   return courses;
+}
+
+function getCourse(courseId) {
+  return coursesIndex[courseId];
 }
 
 module.exports = router;

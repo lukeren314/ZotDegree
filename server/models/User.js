@@ -4,19 +4,17 @@ const User = mongoose.Schema({
   _id: String,
   userData: {
     coursePlans: [
-      {
-        courses: [
-          {
-            id: String,
-            year: Number,
-            quarter: String,
-          },
-        ],
-        degrees: [String],
-        startYear: Number,
-        numYears: Number,
-      },
+      [
+        {
+          id: String,
+          year: Number,
+          quarter: String,
+        },
+      ],
     ],
+    degrees: [String],
+    startYear: Number,
+    numYears: Number,
   },
 });
 

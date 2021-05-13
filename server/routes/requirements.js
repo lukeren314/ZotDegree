@@ -3,6 +3,7 @@ const schools = require("../../crawler/datasets/schools.json");
 
 const express = require("express");
 const router = express.Router();
+const MAX_DEGREES = 10;
 
 router.post("/", (req, res) => {
   try {
@@ -24,6 +25,9 @@ router.post("/", (req, res) => {
 
 function getRequirements(degreeNames) {
   let requirements = [];
+  if (degreeNames.length > MAX_DEGREES) {
+    return requirements;
+  }
   let schoolNames = [];
   for (let degreeName of degreeNames) {
     if (!(degreeName in degrees)) {
