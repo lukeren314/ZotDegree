@@ -413,6 +413,9 @@ class App extends PureComponent {
           loadUserData={this.loadUserData}
           changesSaved={changesSaved}
           isLoadingUserDataSave={isLoadingUserDataSave}
+          courses={courses}
+          startYear={startYear}
+          numYears={numYears}
         ></NavBar>
         <CoursePlanner
           courses={courses}

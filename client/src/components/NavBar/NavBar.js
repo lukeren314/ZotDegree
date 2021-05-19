@@ -9,6 +9,7 @@ import LoadingWheel from "../App/LoadingWheel";
 import SaveLoadButtons from "../NavBar/SaveLoadButtons";
 import AboutButton from "./AboutButton";
 import DonateButton from "./DonateButton";
+import ExportButton from "./ExportButton";
 import SuggestionsButton from "./SuggestionsButton";
 
 const styles = () => ({
@@ -26,6 +27,9 @@ function NavBar(props) {
     loadUserData,
     isLoadingUserDataSave,
     changesSaved,
+    courses,
+    startYear,
+    numYears,
     classes,
   } = props;
   return (
@@ -45,6 +49,7 @@ function NavBar(props) {
         <SuggestionsButton />
         <AboutButton />
         <DonateButton />
+        <ExportButton courses={courses} startYear={startYear} numYears={numYears}/>
         <Box style={{ marginLeft: "5px" }}>
           {isLoadingUserDataSave ? (
             <LoadingWheel isLoading={isLoadingUserDataSave} />
