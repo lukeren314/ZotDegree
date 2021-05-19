@@ -8,12 +8,12 @@ const MAX_DEGREES = 10;
 router.post("/", (req, res) => {
   try {
     if (!req.body.degreeNames) {
-      res.status(400).json({ error: "Missing degree names" });
+      res.status(400).json({ error: "Missing Degree Names" });
     }
     const requirements = getRequirements(req.body.degreeNames);
     if (requirements === null) {
       res.status(500).json({
-        error: `Requirements for degrees ${req.body.degreeNames} not found`,
+        error: `Requirements for degrees ${req.body.degreeNames.join(',')} not found`,
       });
       return;
     }

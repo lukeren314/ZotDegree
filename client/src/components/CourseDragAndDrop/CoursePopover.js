@@ -1,5 +1,6 @@
 import { Popover, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
+import { getUnitsStr } from "../CoursePlanner/courseLogic";
 
 const styles = (theme) => ({
   courseInfo: {
@@ -9,6 +10,7 @@ const styles = (theme) => ({
 
 function CoursePopover(props) {
   const { anchorEl, handleClose, course, classes } = props;
+  console.log(course);
   return (
     <Popover
       anchorEl={anchorEl}
@@ -18,22 +20,24 @@ function CoursePopover(props) {
       onClose={handleClose}
       disableRestoreFocus
     >
-      <div className={classes.courseInfo}>
+      <div className={classes.courseInfo} style={{ width: 400 }}>
         <Typography variant="subtitle1">
-          {course.id}: {course.name}
+          {course.id}. {course.name}. {getUnitsStr(course.units)} Unit(s).
         </Typography>
-        <Typography variant="subtitle2">{course.units} Unit(s)</Typography>
+        <Typography variant="subtitle2"></Typography>
+        <Typography variant="caption">{course.description}</Typography>
         <Typography variant="subtitle2">
-          Prerequisites: {course.prerequisites || "N/A"}
-        </Typography>
-        <Typography variant="subtitle2">
-          Corequisites: {course.corequisites || "N/A"}
+          {course.prerequisites && "Prerequisites: " + course.prerequisites}
         </Typography>
         <Typography variant="subtitle2">
-          Same as: {course.same_as || "N/A"}
+          {course.corequisite && "Corequisites: " + course.corequisites}
         </Typography>
         <Typography variant="subtitle2">
-          GE Categories: {course.ge_categories.join(", ") || "N/A"}
+          {course.same_as && "Same as: " + course.same_as}
+        </Typography>
+        <Typography variant="subtitle2">
+          {course.ge_categories.length > 0 &&
+            "GE Categories: " + course.ge_categories.join(", ")}
         </Typography>
       </div>
     </Popover>

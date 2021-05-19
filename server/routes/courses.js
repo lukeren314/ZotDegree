@@ -20,12 +20,12 @@ router.post("/search", (req, res) => {
   try {
     const { department, courseNumber, geCategories } = req.body;
     if (department === "ALL" && geCategories === []) {
-      res.status(400).json({ error: "Missing department/geCategory" });
+      res.status(400).json({ error: "Missing Department/GECategory" });
     }
     const queriedCourses = queryCourses(department, courseNumber, geCategories);
     if (queriedCourses === null) {
       res.status(500).json({
-        error: `Courses for department ${department} and GE Category ${geCategories} not found`,
+        error: `Courses for Dept. ${department} and GEs ${geCategories.join(',')} not found`,
       });
       return;
     }
@@ -40,7 +40,7 @@ router.get("/getCourse/:courseId", (req, res) => {
     const course = getCourse(req.params.courseId);
     if (course === null) {
       res.status(500).json({
-        error: `Course with id ${courseId} not found.`,
+        error: `Course with id ${courseId} not found`,
       });
       return;
     }

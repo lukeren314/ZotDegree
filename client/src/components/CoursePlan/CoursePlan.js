@@ -1,4 +1,5 @@
-import { Grid, Fade, CircularProgress } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
+import LoadingWheel from "../App/LoadingWheel";
 import YearPlan from "./YearPlan";
 
 const getYearPlans = (coursePlan, numYears) => {
@@ -15,17 +16,7 @@ const getYearPlans = (coursePlan, numYears) => {
 function CoursePlan(props) {
   const { courses, numYears, startYear, isLoading } = props;
   if (isLoading) {
-    return (
-      <Fade
-        in={isLoading}
-        style={{
-          transitionDelay: isLoading ? "80ms" : "0ms",
-        }}
-        unmountOnExit
-      >
-        <CircularProgress />
-      </Fade>
-    );
+    return <LoadingWheel isLoading={isLoading} />;
   }
   const yearPlans = getYearPlans(courses, numYears);
   return (

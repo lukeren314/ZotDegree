@@ -9,6 +9,7 @@ import {
   Link,
 } from "@material-ui/core";
 import HelpIcon from "@material-ui/icons/Help";
+import DonateButton from "./DonateButton";
 
 class AboutButton extends PureComponent {
   constructor(props) {
@@ -58,7 +59,7 @@ class AboutButton extends PureComponent {
               tabIndex={-1}
             >
               This is ZotDegree! It's an tool for planning your coursework for
-              your years at University of California Irvine. This application
+              your years at University of California - Irvine. This application
               was built by a student and IS NOT an official UCI tool. This
               program was designed for undergraduate study, so gradute programs
               may not be fully supported.
@@ -106,6 +107,8 @@ class AboutButton extends PureComponent {
               <br />
               Export Plan - Export your course plan in .csv or .xlsx format.
               <br />
+              Advanced Course Search Bar - A single course search bar with ElasticSearch for courses
+              <br />
               <br />
               Though I do not plan on open sourcing this project, I am open to
               pull requests. The (messy) code is publicly available at:{" "}
@@ -117,9 +120,7 @@ class AboutButton extends PureComponent {
               If you would like to contribute to maintaining this tool, feel
               free to donate!
               <br />
-              <Button onClick={() => {}} color="primary">
-                Donate
-              </Button>
+              <DonateButton />
             </DialogContentText>
           </DialogContent>
           <DialogActions>

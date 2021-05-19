@@ -1,6 +1,7 @@
 import { Button } from "@material-ui/core";
 import BugReportIcon from "@material-ui/icons/BugReport";
-function SuggestionsButton(props) {
+
+function SuggestionsButton() {
   return (
     <Button
       color="secondary"

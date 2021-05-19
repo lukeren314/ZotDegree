@@ -28,6 +28,8 @@ plan.
 Manual Checking - Add an option to manually check a course
 requirement if it was satisfied using AP/CC credit.
 
+Advanced Course Search Bar - A single course search bar with ElasticSearch for courses
+
 ## Run Locally
 
 WIP

@@ -17,8 +17,7 @@ router.post("/loadUserData", async (req, res) => {
     const userKey = req.body.userKey;
     const data = await User.findById(userKey);
     if (data === null) {
-      res.status(500).json({ error: `Course plan for ${userKey} not found!` });
-      console.log(`Course plan for ${userKey} not found!`);
+      res.status(500).json({ error: `Course plan not found!` });
       return;
     }
     res
@@ -26,7 +25,6 @@ router.post("/loadUserData", async (req, res) => {
       .send({ userKey: data._id, userData: getUserData(data.userData) });
   } catch (err) {
     res.status(500).json({ error: err.message });
-    console.log("loadUserData: " + err.message);
   }
 });
 
@@ -47,7 +45,6 @@ router.post("/saveUserData", async (req, res) => {
     res.status(200).send({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
-    console.log("saveUserData: " + err.message);
   }
 });
 

@@ -1,14 +1,14 @@
 import {
   AppBar,
   Box,
-  CircularProgress,
-  Fade,
   Toolbar,
   Typography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
+import LoadingWheel from "../App/LoadingWheel";
 import SaveLoadButtons from "../NavBar/SaveLoadButtons";
 import AboutButton from "./AboutButton";
+import DonateButton from "./DonateButton";
 import SuggestionsButton from "./SuggestionsButton";
 
 const styles = () => ({
@@ -44,17 +44,10 @@ function NavBar(props) {
         />
         <SuggestionsButton />
         <AboutButton />
+        <DonateButton />
         <Box style={{ marginLeft: "5px" }}>
           {isLoadingUserDataSave ? (
-            <Fade
-              in={isLoadingUserDataSave}
-              style={{
-                transitionDelay: isLoadingUserDataSave ? "80ms" : "0ms",
-              }}
-              unmountOnExit
-            >
-              <CircularProgress color="secondary" />
-            </Fade>
+            <LoadingWheel isLoading={isLoadingUserDataSave} />
           ) : (
             <Typography color="secondary" variant="caption">
               {changesSaved ? "Changes Saved" : "*Unsaved changes"}

@@ -1,11 +1,8 @@
 import { Fragment } from "react";
-import { Fade, CircularProgress, List } from "@material-ui/core";
+import { List } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import RequirementsList from "./RequirementsList";
-
-const getFadeStyle = (isLoading) => ({
-  transitionDelay: isLoading ? "80ms" : "0ms",
-});
+import LoadingWheel from "../App/LoadingWheel";
 
 const styles = () => ({
   degreeRequirementsDiv: { overflow: "auto", height: "70vh" },
@@ -17,58 +14,44 @@ const getInterpretedRequirements = (requirements, courses) => {
 };
 
 const interpretRequirements = (requirements, courseIdSet) => {
-  let newRequirements = [];
-  for (let subRequirement of requirements) {
-    let newRequirementsLists = [];
-    for (let requirementsList of subRequirement.requirementsLists) {
-      newRequirementsLists.push({
+  return requirements.map((subRequirement) => ({
+    ...subRequirement,
+    requirementsLists: subRequirement.requirementsLists.map(
+      (requirementsList) => ({
         ...requirementsList,
         requirements: interpretRequirementsList(
           requirementsList.requirements,
           courseIdSet
         ),
-      });
-    }
-    newRequirements.push({
-      ...subRequirement,
-      requirementsLists: newRequirementsLists,
-    });
-  }
-  return newRequirements;
+      })
+    ),
+  }));
 };
 
 const interpretRequirementsList = (requirements, courseIdSet) => {
-  let newRequirements = [];
-  for (let requirement of requirements) {
+  return requirements.map((requirement) => {
     if (["section", "or"].includes(requirement.type)) {
-      newRequirements.push({
+      return {
         ...requirement,
-        courses: interpretRequirementsList(
-          requirement.courses,
-          courseIdSet
-        ),
-      });
+        courses: interpretRequirementsList(requirement.courses, courseIdSet),
+      };
     }
     if (["single", "series"].includes(requirement.type)) {
-      newRequirements.push({
+      return {
         ...requirement,
         checked: requirement.courses.map((courseId) =>
           courseIdSet.has(courseId)
         ),
-      });
+      };
     }
-  }
-  return newRequirements;
+    return requirement;
+  });
 };
 
 function Requirements(props) {
   const { requirements, courses, isLoading, classes } = props;
   if (isLoading) {
-    return (
-      <Fade in={isLoading} style={getFadeStyle(isLoading)} unmountOnExit>
-        <CircularProgress />
-      </Fade>
-    );
+    return <LoadingWheel isLoading={isLoading} />;
   }
   const interpretedRequirements = getInterpretedRequirements(
     requirements,

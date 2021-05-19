@@ -22,6 +22,7 @@ import idManager from "../CoursePlanner/DraggableIdManager";
 import CoursePlanSelect from "../CoursePlanToolbar/CoursePlanSelect";
 import RequirementsContext from "../../contexts/RequirementsContext";
 import AlertNotification from "./AlertNotification";
+import TotalUnitsCount from "../CoursePlanToolbar/TotalUnitsCount.js";
 
 const DEFAULT_YEARS = 4;
 const DEFAULT_START_YEAR = new Date().getFullYear();
@@ -93,8 +94,8 @@ class App extends PureComponent {
         const userData = this.getUserData();
         const jsonData = await apiSaveUserData(this.state.userKey, userData);
         this.stopLoadingUserDataSave();
-        if (jsonData === null) {
-          this.openAlert("Save Data Failed! ", "error");
+        if ("error" in jsonData) {
+          this.openAlert("Save Data Failed! " + jsonData.error, "error");
           return;
         }
         this.setState({ changesSaved: true });
@@ -126,8 +127,8 @@ class App extends PureComponent {
       this.startLoadingUserDataLoad(async () => {
         const jsonData = await apiLoadUserData(this.state.userKey);
         this.stopLoadingUserDataLoad();
-        if (jsonData === null) {
-          this.openAlert("Load Data Failed! ", "error");
+        if ("error" in jsonData) {
+          this.openAlert("Load Data Failed! " + jsonData.error, "error");
           return;
         }
         this.setUserData(jsonData.userData);
@@ -226,8 +227,8 @@ class App extends PureComponent {
       this.startLoadingCourseSearch(async () => {
         const jsonData = await apiSearchCourses(query);
         this.stopLoadingCourseSearch();
-        if (jsonData === null) {
-          this.openAlert("Course Search Failed! ", "error");
+        if ("error" in jsonData) {
+          this.openAlert("Course Search Failed! " + jsonData.error, "error");
           return;
         }
         const courseSearchList = this.getCourseDroppables(jsonData);
@@ -273,8 +274,8 @@ class App extends PureComponent {
       this.startLoadingRequirements(async () => {
         let jsonData = await apiGetRequirements(newDegrees);
         this.stopLoadingRequirements();
-        if (jsonData == null) {
-          this.openAlert("Get Requirements Failed!", "error");
+        if ("errpr" in jsonData) {
+          this.openAlert("Get Requirements Failed! " + jsonData.error, "error");
           return;
         }
         this.setState({ requirements: jsonData });
@@ -296,8 +297,8 @@ class App extends PureComponent {
       this.startLoadingGetCourse(async () => {
         let jsonData = await apiGetCourse(courseId);
         this.stopLoadingGetCourse();
-        if (jsonData == null) {
-          this.openAlert("Get Course Failed!", "error");
+        if ("error" in jsonData) {
+          this.openAlert("Get Course Failed! " + jsonData.error, "error");
           return;
         }
         const newLoadedCourses = {
@@ -434,6 +435,7 @@ class App extends PureComponent {
                 numYears={numYears}
                 setNumYears={this.setNumYears}
               />
+              <TotalUnitsCount courses={courses} />
             </CoursePlanToolbar>
             <CoursePlanContext.Provider value={coursePlanContext}>
               <CoursePlan

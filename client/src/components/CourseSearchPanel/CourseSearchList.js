@@ -1,19 +1,11 @@
-import { Fade, CircularProgress } from "@material-ui/core";
+import LoadingWheel from "../App/LoadingWheel";
 import CourseDroppable from "../CourseDragAndDrop/CourseDroppable";
 
 function CourseSearchList(props) {
   const { courseList, isLoading } = props;
   if (isLoading) {
     return (
-      <Fade
-        in={isLoading}
-        style={{
-          transitionDelay: isLoading ? "80ms" : "0ms",
-        }}
-        unmountOnExit
-      >
-        <CircularProgress />
-      </Fade>
+      <LoadingWheel isLoading={isLoading}/>
     );
   }
   return (

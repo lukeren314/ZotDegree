@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/styles";
 
 const styles = () => ({
   toolbarPaper: { marginBottom: "8px" },
-  toolbarItem: { marginRight: "5vw" },
+  toolbarItem: { marginRight: "3vw" },
 });
 
 function CoursePlanToolbar(props) {

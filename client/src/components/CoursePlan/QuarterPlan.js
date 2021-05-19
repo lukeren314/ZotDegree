@@ -1,6 +1,7 @@
 import { Grid, Typography } from "@material-ui/core";
 import CourseDroppable from "../CourseDragAndDrop/CourseDroppable";
 import { withStyles } from "@material-ui/styles";
+import { calculateTotalUnits, getUnitsStr } from "../CoursePlanner/courseLogic";
 
 const styles = () => ({
   quarterPlanHeader: {
@@ -9,22 +10,16 @@ const styles = () => ({
   quarterPlanUnits: { float: "right", textAlign: "right", fontSize: "12px" },
 });
 
-const calculateTotalUnits = (courses) => {
-  return courses.reduce((total, course) => {
-    return total + (course.units ? parseInt(course.units.split("-")[0]) : 0);
-  }, 0);
-};
-
 function QuarterPlan(props) {
   const { quarterPlan, year, quarter, classes } = props;
-  let numUnits = calculateTotalUnits(
+  let totalUnits = calculateTotalUnits(
     quarterPlan.map((course) => course.content)
   );
   return (
     <Grid item>
       <Typography className={classes.quarterPlanHeader}>
         <span>{quarter}</span>
-        <span className={classes.quarterPlanUnits}>{numUnits + " Units"}</span>
+        <span className={classes.quarterPlanUnits}>{getUnitsStr(totalUnits) + " Units"}</span>
       </Typography>
       <CourseDroppable
         droppableId={year + quarter}

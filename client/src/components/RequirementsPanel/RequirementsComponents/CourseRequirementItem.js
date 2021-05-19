@@ -18,7 +18,7 @@ function CourseRequirementItem(props) {
             <ListItem
               key={course}
               button={!requirement.checked[index]}
-              onClick={() => loadCourse(course)}
+              onClick={() => !(course in loadedCourses) && loadCourse(course)}
             >
               {requirement.checked[index] || !(course in loadedCourses) ? (
                 <ListItemText

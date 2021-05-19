@@ -95,7 +95,7 @@ class SaveLoadButton extends PureComponent {
                   onChange={(event) =>
                     setRememberPassword(event.target.checked)
                   }
-                  color="primary"
+                  color="secondary"
                 />
               }
               label="Remember Password"

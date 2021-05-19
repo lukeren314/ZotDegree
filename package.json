@@ -4,6 +4,7 @@
   "description": "by Luke Ren",
   "main": "server/index.js",
   "scripts": {
+    "debug": "nodemon server/index.js",
     "start": "node server/index.js",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },

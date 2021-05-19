@@ -29,15 +29,7 @@ const onDragEnd = (
     return;
   }
   if (source.droppableId.startsWith("req")) {
-    const courseId = source.droppableId.substr("req".length);
-    const newCourse = loadedCourses[courseId];
-    delete loadedCourses[courseId];
-    const newCourses = copyItemTo(
-      courses,
-      destination,
-      newCourse,
-      idManager.getNextId()
-    );
+    const newCourses = maybeAddCourseRequirement(source, destination, courses, loadedCourses, openAlert);
     setCourses(newCourses);
     return;
   }
@@ -49,6 +41,36 @@ const onDragEnd = (
     openAlert
   );
   setCourses(newCourses);
+};
+
+const maybeAddCourseRequirement = (
+  source,
+  destination,
+  courses,
+  loadedCourses,
+  openAlert
+) => {
+  
+  const courseId = source.droppableId.substr("req".length);
+  if (
+    findCourseById(courseId, courses) !== -1
+  ) {
+    openAlert("This class was already added!", "error");
+    return courses;
+  }
+  const newCourse = loadedCourses[courseId];
+  const newCourses = copyItemTo(
+    courses,
+    destination,
+    newCourse,
+    idManager.getNextId()
+  );
+  if (newCourses.length > MAX_COURSE_LIMIT) {
+    openAlert(`Max course limit: ${MAX_COURSE_LIMIT}`);
+    return courses;
+  }
+  delete loadedCourses[courseId];
+  return newCourses;
 };
 
 const dragLogic = (
@@ -132,7 +154,7 @@ function CoursePlanner(props) {
     children,
   } = props;
   const left = children[0];
-  const right = children[1]
+  const right = children[1];
   return (
     <DragDropContext
       onDragEnd={(result) =>

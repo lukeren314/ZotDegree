@@ -1,15 +1,22 @@
-import { PureComponent, Fragment } from "react";
-import { Paper, List, ListItem, ListItemText } from "@material-ui/core";
+import { PureComponent } from "react";
+import {
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+} from "@material-ui/core";
 import { Draggable } from "react-beautiful-dnd";
 import CoursePopover from "./CoursePopover";
 import { withStyles } from "@material-ui/styles";
 import CourseDeleteButton from "./CourseDeleteButton";
+import { getUnitsStr } from "../CoursePlanner/courseLogic";
 
 const styles = () => ({
   listItemSecondaryAction: {
     visibility: "hidden",
   },
-  listItem: {
+  courseBody: {
     "&:hover $listItemSecondaryAction": {
       visibility: "inherit",
     },
@@ -21,7 +28,6 @@ const getItemStyle = (isDragging, draggableStyle, itemWidth) => {
     userSelect: "none",
     padding: 0,
     margin: `0 0 ${4}px 0`,
-    color: "white",
     background: isDragging ? "lightgreen" : "#0064a4",
     width: itemWidth,
     ...draggableStyle,
@@ -33,8 +39,8 @@ class CourseDraggable extends PureComponent {
     super(props);
 
     this.setSelected = (event) => {
-      this.setState({selected: event.currentTarget})
-    }
+      this.setState({ selected: event.currentTarget });
+    };
 
     this.handleClose = () => {
       this.setState({ selected: null });
@@ -59,8 +65,13 @@ class CourseDraggable extends PureComponent {
     return (
       <Draggable key={course.id} draggableId={course.id} index={index}>
         {(provided, snapshot) => (
-          <Fragment>
+          <div>
             <Paper
+              className={classes.courseBody}
+              variant="outlined"
+              onClick={this.setSelected}
+              onMouseOver={this.handleHovering}
+              onMouseOut={this.handleHoveringOut}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
@@ -69,31 +80,32 @@ class CourseDraggable extends PureComponent {
                 provided.draggableProps.style,
                 itemWidth
               )}
-              variant="outlined"
-              onClick={this.setSelected}
-              onMouseOver={this.handleHovering}
-              onMouseOut={this.handleHoveringOut}
             >
               <List disablePadding={true}>
-                <ListItem
-                  dense={true}
-                  className={classes.listItem}
-                  selected={Boolean(selected)}
-                >
+                <ListItem dense={true} selected={Boolean(selected)}>
                   <ListItemText
                     primary={course.content.id}
-                    secondary={(isHovering && isDeletable) ? ((course.content.units || 0) + " Units") : null}
+                    primaryTypographyProps={{ color: "secondary" }}
+                    secondary={
+                      isHovering && isDeletable
+                        ? getUnitsStr(course.content.units) + " Units"
+                        : null
+                    }
                     secondaryTypographyProps={{
                       variant: "caption",
-                      style: { color: "white" },
+                      color: "secondary",
                     }}
                   />
-                  <div className={classes.listItemSecondaryAction}>
-                    <CourseDeleteButton
-                      isDeletable={isDeletable}
-                      courseId={course.content.id}
-                    />
-                  </div>
+                  <ListItemSecondaryAction
+                    className={classes.listItemSecondaryAction}
+                  >
+                    {isDeletable && (
+                      <CourseDeleteButton
+                        isDeletable={isDeletable}
+                        courseId={course.content.id}
+                      />
+                    )}
+                  </ListItemSecondaryAction>
                 </ListItem>
               </List>
             </Paper>
@@ -102,7 +114,7 @@ class CourseDraggable extends PureComponent {
               handleClose={this.handleClose}
               course={course.content}
             />
-          </Fragment>
+          </div>
         )}
       </Draggable>
     );

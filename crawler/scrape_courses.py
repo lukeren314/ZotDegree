@@ -68,9 +68,9 @@ def parse_course_div(course_div):
 
 
 course_title_re = re.compile(
-    r'([A-Z0-9&\/ ]+) ([0-9A-Z]+)\.  ([A-Za-z0-9.() —–\-\/:,&?\'+’]+)\.  (\.?[0-9]\.?[0-9]? ?-? ?\.?[0-9]?[0-9]?) (Workload )?Units?\.')
+    r'([A-Z0-9&\/ ]+) ([0-9A-Z]+)\.  ?([A-Za-z0-9.() —–\-\/:,&?\'+’]+)\.  ?(\.?[0-9]\.?[0-9]? ?-? ?\.?[0-9]?[0-9]?) (Workload )?Units?\.')
 course_title_no_units = re.compile(
-    r'([A-Z0-9&\/ ]+) ([0-9A-Z]+)\.  ([A-Za-z0-9.() —–\-\/:,&?\'+’]+)\.')
+    r'([A-Z0-9&\/ ]+) ([0-9A-Z]+)\.  ?([A-Za-z0-9.() —–\-\/:,&?\'+’]+)\.')
 
 
 def parse_course_title(title):
@@ -78,11 +78,14 @@ def parse_course_title(title):
 
     if "Unit" in title:
         reg = course_title_re.match(title)
-        print(title)
-        units = reg.group(4)
+        units_str = reg.group(4)
+        units = [float(unit.strip()) for unit in units_str.split("-")]
+        units = [int(unit) if unit.is_integer() else unit for unit in units]
+        if len(units) == 1:
+            units.append(units[0])
     else:
         reg = course_title_no_units.match(title)
-        units = 0
+        units = [0, 0]
 
     department, number, name = reg.group(1), reg.group(2), reg.group(3)
     name = name.strip()
@@ -92,7 +95,7 @@ def parse_course_title(title):
         "department": department,
         "number": number,
         "name": name,
-        "units": units  # leave as string?
+        "units": units
     }
 
 
@@ -104,12 +107,14 @@ def parse_course_info(course_div):
     same_as = ""
     ge_categories = []
     lines = desc.get_text().split("\n")
+    desc = lines[1]
     for line in lines:
         line = get_clean_text(line)
         # inconsistencies
         line = line.replace("(GE ", "(")
         line = line.replace("(General Education ", "(")
 
+        line = line.strip()
         if not line:
             continue
         # learn prerequisite tree from uci prerequisites
@@ -128,9 +133,22 @@ def parse_course_info(course_div):
                 if token in ("Ia", "Ib", "II", "III", "IV", "Va", "Vb", "VI", "VII", "VIII"):
                     ge_categories.append(token)
     return {
+        "description": desc,
         "prerequisite": prerequisite,
         "corequisite": corequisite,
         "prerequisite_tree": prerequisite_tree,
         "same_as": same_as,
         "ge_categories": ge_categories
     }
+
+
+def test_bana(soup_cache):
+    scrape_course_department(
+        soup_cache, "http://catalogue.uci.edu/allcourses/bana/")
+
+
+if __name__ == "__main__":
+    from soupcache import SoupCache
+    soup_cache = SoupCache()
+
+    test_bana(soup_cache)
