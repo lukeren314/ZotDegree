@@ -47,43 +47,20 @@ class App extends PureComponent {
     super(props);
 
     // USER DATA --------------------------------------------------------------
-    this.setUserKey = (newUserKey) => {
-      this.setState({ userKey: newUserKey });
-    };
+    this.setUserKey = (userKey) => this.setState({ userKey });
 
-    this.setRememberPassword = (newRememberPassword) => {
-      localStorage.setItem(REMEMBER_PASSWORD_KEY, newRememberPassword);
-      if (newRememberPassword) {
+    this.setRememberPassword = (rememberPassword) => {
+      localStorage.setItem(REMEMBER_PASSWORD_KEY, rememberPassword);
+      if (rememberPassword) {
         localStorage.setItem(USER_KEY_KEY, this.state.userKey);
       } else {
         localStorage.setItem(USER_KEY_KEY, null);
       }
-      this.setState({ rememberPassword: newRememberPassword });
-    };
-
-    this.prepareCourses = (coursePlans) =>
-      coursePlans.map((courses) =>
-        courses.map((course) => ({
-          id: course.content.id,
-          year: course.year,
-          quarter: course.quarter,
-        }))
-      );
-
-    this.getUserData = () => {
-      const { degrees, coursePlans, startYear, numYears } = this.state;
-      return {
-        userData: {
-          startYear,
-          numYears,
-          degrees: degrees.map((degree) => degree.value),
-          coursePlans: this.prepareCourses(coursePlans),
-        },
-      };
+      this.setState({ rememberPassword });
     };
 
     this.saveUserData = () => {
-      if (this.state.isLoadingUserDataSave) {
+      if (this.state.loadingUserDataSave) {
         return;
       }
       if (this.state.userKey.length === 0) {
@@ -102,9 +79,25 @@ class App extends PureComponent {
       });
     };
 
-    this.getPreparedCourses = (coursePlans) =>
+    this.getUserData = () => {
+      const { degrees, coursePlans, startYear, numYears } = this.state;
+      return {
+        userData: {
+          startYear,
+          numYears,
+          degrees: degrees.map((degree) => degree.value),
+          coursePlans: this.prepareCourses(coursePlans),
+        },
+      };
+    };
+
+    this.prepareCourses = (coursePlans) =>
       coursePlans.map((courses) =>
-        courses.map((course) => ({ id: idManager.getNextId(), ...course }))
+        courses.map((course) => ({
+          id: course.content.id,
+          year: course.year,
+          quarter: course.quarter,
+        }))
       );
 
     this.setUserData = (userData) => {
@@ -120,8 +113,13 @@ class App extends PureComponent {
       this.getRequirements(degrees);
     };
 
+    this.getPreparedCourses = (coursePlans) =>
+      coursePlans.map((courses) =>
+        courses.map((course) => ({ id: idManager.getNextId(), ...course }))
+      );
+
     this.loadUserData = () => {
-      if (this.state.isLoadingUserDataLoad) {
+      if (this.state.loadingUserDataLoad) {
         return;
       }
       this.startLoadingUserDataLoad(async () => {
@@ -135,20 +133,17 @@ class App extends PureComponent {
       });
     };
 
-    this.startLoadingUserDataLoad = (callback) => {
-      this.setState({ isLoadingUserDataLoad: true }, callback);
-    };
+    this.startLoadingUserDataLoad = (callback) =>
+      this.setState({ loadingUserDataLoad: true }, callback);
 
-    this.stopLoadingUserDataLoad = () => {
-      this.setState({ isLoadingUserDataLoad: false });
-    };
-    this.startLoadingUserDataSave = (callback) => {
-      this.setState({ isLoadingUserDataSave: true }, callback);
-    };
+    this.stopLoadingUserDataLoad = () =>
+      this.setState({ loadingUserDataLoad: false });
 
-    this.stopLoadingUserDataSave = () => {
-      this.setState({ isLoadingUserDataSave: false });
-    };
+    this.startLoadingUserDataSave = (callback) =>
+      this.setState({ loadingUserDataSave: true }, callback);
+
+    this.stopLoadingUserDataSave = () =>
+      this.setState({ loadingUserDataSave: false });
 
     this.beforeUnload = (e) => {
       if (!this.state.changesSaved) {
@@ -204,24 +199,21 @@ class App extends PureComponent {
       });
     };
 
-    this.setNumYears = (newNumYears) => {
+    this.setNumYears = (newNumYears) =>
       this.setState({ numYears: newNumYears, changesSaved: false });
-    };
 
-    this.setStartYear = (newStartYear) => {
+    this.setStartYear = (newStartYear) =>
       this.setState({ startYear: newStartYear, changesSaved: false });
-    };
 
-    this.setCurrentCoursePlan = (newCurrentCoursePlan) => {
+    this.setCurrentCoursePlan = (newCurrentCoursePlan) =>
       this.setState({
         currentCoursePlan: newCurrentCoursePlan,
         courses: this.state.coursePlans[newCurrentCoursePlan],
       });
-    };
 
     // COURSE SEARCH ----------------------------------------------------------
     this.searchCourses = async (query) => {
-      if (this.state.isLoadingCourseSearch) {
+      if (this.state.loadingCourseSearch) {
         return;
       }
       this.startLoadingCourseSearch(async () => {
@@ -245,13 +237,11 @@ class App extends PureComponent {
         content: course,
       }));
 
-    this.startLoadingCourseSearch = (callback) => {
-      this.setState({ isLoadingCourseSearch: true }, callback);
-    };
+    this.startLoadingCourseSearch = (callback) =>
+      this.setState({ loadingCourseSearch: true }, callback);
 
-    this.stopLoadingCourseSearch = () => {
-      this.setState({ isLoadingCourseSearch: false });
-    };
+    this.stopLoadingCourseSearch = () =>
+      this.setState({ loadingCourseSearch: false });
 
     // REQUIREMENTS ----------------------------------------------------
     this.setDegrees = (newDegrees) => {
@@ -264,7 +254,7 @@ class App extends PureComponent {
     };
 
     this.getRequirements = (newDegrees) => {
-      if (this.state.isLoadingRequirements) {
+      if (this.state.loadingRequirements) {
         return;
       }
       if (newDegrees.length === 0) {
@@ -278,20 +268,46 @@ class App extends PureComponent {
           this.openAlert("Get Requirements Failed! " + jsonData.error, "error");
           return;
         }
-        this.setState({ requirements: jsonData });
+        const requirements = this.assignRequirementsIds(jsonData);
+        this.setState({ requirements });
       });
     };
 
-    this.startLoadingRequirements = (callback) => {
-      this.setState({ isLoadingRequirements: true }, callback);
+    this.assignRequirementsIds = (requirements) => {
+      this.counter = 0;
+      for (let subRequirement of requirements) {
+        for (let requirementsList of subRequirement.requirementsLists) {
+          requirementsList.requirements = this.nestedAssignIds(
+            requirementsList.requirements
+          );
+        }
+      }
+      return requirements;
     };
 
-    this.stopLoadingRequirements = () => {
-      this.setState({ isLoadingRequirements: false });
-    };
+    this.nestedAssignIds = (requirements) =>
+      requirements.map((requirement) => {
+        if (["section", "or"].includes(requirement.type)) {
+          return {
+            ...requirement,
+            id: this.counter++,
+            courses: this.nestedAssignIds(requirement.courses),
+          };
+        }
+        return {
+          ...requirement,
+          id: this.counter++,
+        };
+      });
+
+    this.startLoadingRequirements = (callback) =>
+      this.setState({ loadingRequirements: true }, callback);
+
+    this.stopLoadingRequirements = () =>
+      this.setState({ loadingRequirements: false });
 
     this.loadCourse = (courseId) => {
-      if (this.state.isLoadingGetCourse) {
+      if (this.state.loadingGetCourse) {
         return;
       }
       this.startLoadingGetCourse(async () => {
@@ -314,13 +330,11 @@ class App extends PureComponent {
       });
     };
 
-    this.startLoadingGetCourse = (callback) => {
-      this.setState({ isLoadingGetCourse: true }, callback);
-    };
+    this.startLoadingGetCourse = (callback) =>
+      this.setState({ loadingGetCourse: true }, callback);
 
-    this.stopLoadingGetCourse = () => {
-      this.setState({ isLoadingGetCourse: false });
-    };
+    this.stopLoadingGetCourse = () =>
+      this.setState({ loadingGetCourse: false });
 
     // STATE ------------------------------------------------------------------
     const coursePlans = [...Array(MAX_COURSE_PLANS).keys()].map(() => []);
@@ -328,8 +342,8 @@ class App extends PureComponent {
       // USER DATA
       userKey: "",
       rememberPassword: false,
-      isLoadingUserDataSave: false,
-      isLoadingUserDataLoad: false,
+      loadingUserDataSave: false,
+      loadingUserDataLoad: false,
       changesSaved: true,
 
       // ALERTS
@@ -349,14 +363,14 @@ class App extends PureComponent {
 
       // COURSE SERACH
       courseSearchList: [],
-      isLoadingCourseSearch: false,
+      loadingCourseSearch: false,
       searchCourses: this.searchCourses,
 
       // REQUIREMENTS
       degrees: [],
       requirements: [],
-      isLoadingRequirements: false,
-      isLoadingGetCourse: false,
+      loadingRequirements: false,
+      loadingGetCourse: false,
       requirementsContext: {
         loadedCourses: {},
         loadCourse: this.loadCourse,
@@ -384,8 +398,8 @@ class App extends PureComponent {
     const {
       userKey,
       rememberPassword,
-      isLoadingUserDataSave,
-      isLoadingUserDataLoad,
+      loadingUserDataSave,
+      loadingUserDataLoad,
       changesSaved,
       alertOpen,
       alertSeverity,
@@ -395,10 +409,10 @@ class App extends PureComponent {
       numYears,
       startYear,
       courseSearchList,
-      isLoadingCourseSearch,
+      loadingCourseSearch,
       degrees,
       requirements,
-      isLoadingRequirements,
+      loadingRequirements,
       coursePlanContext,
       requirementsContext,
     } = this.state;
@@ -412,7 +426,7 @@ class App extends PureComponent {
           saveUserData={this.saveUserData}
           loadUserData={this.loadUserData}
           changesSaved={changesSaved}
-          isLoadingUserDataSave={isLoadingUserDataSave}
+          loadingUserDataSave={loadingUserDataSave}
           courses={courses}
           startYear={startYear}
           numYears={numYears}
@@ -445,7 +459,7 @@ class App extends PureComponent {
                 courses={courses}
                 numYears={numYears}
                 startYear={startYear}
-                isLoading={isLoadingUserDataLoad}
+                loading={loadingUserDataLoad}
               />
             </CoursePlanContext.Provider>
           </Fragment>
@@ -455,7 +469,7 @@ class App extends PureComponent {
                 degrees={degrees}
                 requirements={requirements}
                 courses={courses}
-                isLoading={isLoadingRequirements}
+                loading={loadingRequirements}
                 setDegrees={this.setDegrees}
               />
             </RequirementsContext.Provider>
@@ -463,7 +477,7 @@ class App extends PureComponent {
               openAlert={this.openAlert}
               searchCourses={this.searchCourses}
               courseSearchList={courseSearchList}
-              isLoading={isLoadingCourseSearch}
+              loading={loadingCourseSearch}
             />
           </ToolPanels>
         </CoursePlanner>

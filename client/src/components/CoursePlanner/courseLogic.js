@@ -1,5 +1,4 @@
 export const getUnitsStr = (units) => {
- console.log(units)
   return `${units[0] === units[1] ? units[0] : units.join("-")}`;
 }
 

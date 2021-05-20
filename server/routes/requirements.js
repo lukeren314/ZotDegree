@@ -1,5 +1,6 @@
 const degrees = require("../../crawler/datasets/degrees.json");
 const schools = require("../../crawler/datasets/schools.json");
+const universalRequirements = require("../../crawler/datasets/universal_requirements.json");
 
 const express = require("express");
 const router = express.Router();
@@ -13,7 +14,9 @@ router.post("/", (req, res) => {
     const requirements = getRequirements(req.body.degreeNames);
     if (requirements === null) {
       res.status(500).json({
-        error: `Requirements for degrees ${req.body.degreeNames.join(',')} not found`,
+        error: `Requirements for degrees ${req.body.degreeNames.join(
+          ","
+        )} not found`,
       });
       return;
     }
@@ -24,7 +27,9 @@ router.post("/", (req, res) => {
 });
 
 function getRequirements(degreeNames) {
-  let requirements = [];
+  let requirements = [
+    { name: "College Requirements", requirementsLists: [universalRequirements] },
+  ];
   if (degreeNames.length > MAX_DEGREES) {
     return requirements;
   }

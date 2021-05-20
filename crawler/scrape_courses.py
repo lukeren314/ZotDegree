@@ -103,7 +103,7 @@ def parse_course_info(course_div):
     desc = course_div.find("div", class_="courseblockdesc")
     prerequisite = ""
     corequisite = ""
-    prerequisite_tree = ""
+    prerequisite_list = []
     same_as = ""
     ge_categories = []
     lines = desc.get_text().split("\n")
@@ -117,15 +117,18 @@ def parse_course_info(course_div):
         line = line.strip()
         if not line:
             continue
-        # learn prerequisite tree from uci prerequisites
-        if line.startswith("Prerequisite"):
-            # TODO: prerequisites
-            prerequisite = line[line.find(" ")+1:]
-            prerequisite_tree = ""
-        elif line.startswith("Corequisite"):
-            corequisite = line[line.find(" ")+1:]
-        elif line.startswith("Same as"):
-            same_as = line[len("Same as "):].replace(".", "")
+        if line.startswith("Prerequisite or corequisite: "):
+            line = line[len("Prerequisite or corequisite: "):].strip()
+            # TODO figure out this case
+        elif line.startswith("Prerequisite: "):
+            line = line[len("Prerequisite: "):].strip()
+            prerequisite = line
+            prerequisite_list = get_prerequisite_list(line)
+        elif line.startswith("Corequisite: "):
+            line = line[len("Corequisite: "):].strip()
+            corequisite = line
+        elif line.startswith("Same as "):
+            same_as = line[len("Same as "):].replace(".", "").strip()
         elif line.startswith("(I") or line.startswith("(V"):
             tokens = line.replace("(", "").replace(
                 ")", "").replace(",", "").split()
@@ -136,10 +139,66 @@ def parse_course_info(course_div):
         "description": desc,
         "prerequisite": prerequisite,
         "corequisite": corequisite,
-        "prerequisite_tree": prerequisite_tree,
+        "prerequisite_list": prerequisite_list,
         "same_as": same_as,
         "ge_categories": ge_categories
     }
+
+
+def get_prerequisite_list(line):
+    courses = line.split(".")[0].strip()
+    tree = parse_tree(courses)
+    return tree
+
+bad_chars = set("abcdefghijklmnopqrstuvwxyz.")
+
+def parse_tree(tree_str):
+    parts = []
+    i = 0
+    while True:
+        if i >= len(tree_str):
+            break
+        if tree_str[i] == "(":
+            count = 1
+            end = 0
+            for j in range(i+1, len(tree_str)):
+                if tree_str[j] == "(":
+                    count += 1
+                elif tree_str[j] == ")":
+                    count -= 1
+                    if count == 0:
+                        end = j
+                        break
+            parts.extend(parse_tree(tree_str[i+1:end]))
+            i = end + 2
+            continue
+        if tree_str[i:i+len("and ")] == "and ":
+            # parts.append("and")
+            i += len("and ")
+            continue
+        if tree_str[i:i+len("or ")] == "or ":
+            # parts.append("or")
+            i += len("or ")
+            continue
+        # read a course
+        next_index = get_next_index(tree_str, i)
+        course_id = tree_str[i:next_index-1]
+        if all((c not in bad_chars for c in course_id)):
+            parts.append(tree_str[i:next_index-1])
+        i = next_index
+    return parts
+
+def get_next_index(tree_str, i):
+    nextor = tree_str.find("or ", i)
+    nextand = tree_str.find("and ", i)
+    found = [i for i in (nextor, nextand) if i >= 0]
+    if not found:
+        return len(tree_str)+1
+    nextIndex = min(found)
+    return nextIndex
+
+def test_scrape_courses(soup_cache):
+    scrape_course_departments(soup_cache)
 
 
 def test_bana(soup_cache):
@@ -151,4 +210,5 @@ if __name__ == "__main__":
     from soupcache import SoupCache
     soup_cache = SoupCache()
 
-    test_bana(soup_cache)
+    test_scrape_courses(soup_cache)
+    # test_bana(soup_cache)

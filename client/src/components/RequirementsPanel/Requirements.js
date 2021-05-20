@@ -13,8 +13,8 @@ const getInterpretedRequirements = (requirements, courses) => {
   return interpretRequirements(requirements, courseIdSet);
 };
 
-const interpretRequirements = (requirements, courseIdSet) => {
-  return requirements.map((subRequirement) => ({
+const interpretRequirements = (requirements, courseIdSet) =>
+  requirements.map((subRequirement) => ({
     ...subRequirement,
     requirementsLists: subRequirement.requirementsLists.map(
       (requirementsList) => ({
@@ -26,10 +26,9 @@ const interpretRequirements = (requirements, courseIdSet) => {
       })
     ),
   }));
-};
 
-const interpretRequirementsList = (requirements, courseIdSet) => {
-  return requirements.map((requirement) => {
+const interpretRequirementsList = (requirements, courseIdSet) =>
+  requirements.map((requirement) => {
     if (["section", "or"].includes(requirement.type)) {
       return {
         ...requirement,
@@ -46,7 +45,6 @@ const interpretRequirementsList = (requirements, courseIdSet) => {
     }
     return requirement;
   });
-};
 
 function Requirements(props) {
   const { requirements, courses, isLoading, classes } = props;
