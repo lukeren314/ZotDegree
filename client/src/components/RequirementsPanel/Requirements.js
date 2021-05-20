@@ -1,12 +1,7 @@
 import { Fragment } from "react";
 import { List } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
 import RequirementsList from "./RequirementsList";
 import LoadingWheel from "../App/LoadingWheel";
-
-const styles = () => ({
-  degreeRequirementsDiv: { overflow: "auto", height: "70vh" },
-});
 
 const getInterpretedRequirements = (requirements, courses) => {
   const courseIdSet = new Set(courses.map((course) => course.content.id));
@@ -32,20 +27,24 @@ const interpretRequirementsList = (requirements, courseIdSet) =>
     if (["section", "or", "series"].includes(requirement.type)) {
       return {
         ...requirement,
-        subrequirements: interpretRequirementsList(requirement.subrequirements, courseIdSet),
+        subrequirements: interpretRequirementsList(
+          requirement.subrequirements,
+          courseIdSet
+        ),
       };
     }
     if (["single"].includes(requirement.type)) {
       return {
         ...requirement,
         checked: courseIdSet.has(requirement.course),
+        satisfiedBy: [requirement.course],
       };
     }
     return requirement;
   });
 
 function Requirements(props) {
-  const { requirements, courses, isLoading, classes } = props;
+  const { requirements, courses, isLoading } = props;
   if (isLoading) {
     return <LoadingWheel isLoading={isLoading} />;
   }
@@ -54,7 +53,7 @@ function Requirements(props) {
     courses
   );
   return (
-    <div className={classes.degreeRequirementsDiv}>
+    <div>
       {interpretedRequirements.map((requirement) => (
         <List key={requirement.name}>
           {requirement.requirementsLists.map((item, index) => (
@@ -71,4 +70,4 @@ function Requirements(props) {
   );
 }
 
-export default withStyles(styles)(Requirements);
+export default Requirements;

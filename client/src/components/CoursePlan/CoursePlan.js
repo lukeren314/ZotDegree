@@ -20,7 +20,7 @@ function CoursePlan(props) {
   }
   const yearPlans = getYearPlans(courses, numYears);
   return (
-    <Grid>
+    <Grid style={{overflow: "auto", height: "75vh"}}>
       {[...Array(numYears).keys()].map((year) => (
         <YearPlan
           key={year + "year"}

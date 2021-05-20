@@ -13,13 +13,24 @@ function CourseRequirementItem(props) {
   return (
     <Fragment>
       <RequirementsContext.Consumer>
-        {({ loadedRequirements, loadCourse }) => (
+        {({
+          loadedRequirements,
+          loadCourse,
+          highlightCourse,
+          stopHighlightCourse,
+        }) => (
           <ListItem
             dense={true}
-            button={!requirement.checked}
+            button={true}
             onClick={() =>
               !(requirement.id in loadedRequirements) &&
               loadCourse(requirement.id, requirement.course)
+            }
+            onMouseEnter={() =>
+              requirement.checked && highlightCourse(requirement.course)
+            }
+            onMouseLeave={() =>
+              requirement.checked && stopHighlightCourse(requirement.course)
             }
           >
             {requirement.checked || !(requirement.id in loadedRequirements) ? (

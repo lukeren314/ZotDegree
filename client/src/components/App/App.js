@@ -338,6 +338,34 @@ class App extends PureComponent {
     this.stopLoadingGetCourse = () =>
       this.setState({ loadingGetCourse: false });
 
+    this.highlightCourse = (courseId) => {
+      const highlightedCourses = this.state.coursePlanContext.highlightedCourses;
+      if (highlightedCourses.includes(courseId)) {
+        return;
+      }
+      this.setState({
+        coursePlanContext: {
+          ...this.state.coursePlanContext,
+          highlightedCourses: [...highlightedCourses, courseId],
+        },
+      });
+    };
+
+    this.stopHighlightCourse = (courseId) => {
+      const highlightedCourses = this.state.coursePlanContext.highlightedCourses;
+      if (!highlightedCourses.includes(courseId)) {
+        return;
+      }
+      this.setState({
+        coursePlanContext: {
+          ...this.state.coursePlanContext,
+          highlightedCourses: highlightedCourses.filter(
+            (val) => val !== courseId
+          ),
+        },
+      });
+    };
+
     // STATE ------------------------------------------------------------------
     const coursePlans = [...Array(MAX_COURSE_PLANS).keys()].map(() => []);
     this.state = {
@@ -360,6 +388,7 @@ class App extends PureComponent {
       numYears: DEFAULT_YEARS,
       startYear: DEFAULT_START_YEAR,
       coursePlanContext: {
+        highlightedCourses: [],
         removeCourseById: this.removeCourseById,
       },
 
@@ -376,6 +405,8 @@ class App extends PureComponent {
       requirementsContext: {
         loadedRequirements: {},
         loadCourse: this.loadCourse,
+        highlightCourse: this.highlightCourse,
+        stopHighlightCourse: this.stopHighlightCourse,
       },
     };
   }

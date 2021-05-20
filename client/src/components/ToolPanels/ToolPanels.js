@@ -5,8 +5,10 @@ import { withStyles } from "@material-ui/styles";
 
 const styles = () => ({
   toolPanelsDiv: {
-    marginLeft: "4px",
-    marginRight: "4px",
+    paddingLeft: "4px",
+    paddingRight: "4px",
+    overflow: "auto",
+    height: "78vh"
   },
 });
 

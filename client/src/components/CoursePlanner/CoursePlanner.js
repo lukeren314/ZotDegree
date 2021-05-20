@@ -7,8 +7,7 @@ import { withStyles } from "@material-ui/styles";
 const MAX_COURSE_LIMIT = 100;
 
 const styles = () => ({
-  containerGrid: { height: "85vh" },
-  itemGrid: { overflow: "auto", height: "100%" },
+  containerGrid: { },
 });
 
 const onDragEnd = (
@@ -29,7 +28,13 @@ const onDragEnd = (
     return;
   }
   if (source.droppableId.startsWith("req")) {
-    const newCourses = maybeAddCourseRequirement(source, destination, courses, loadedRequirements, openAlert);
+    const newCourses = maybeAddCourseRequirement(
+      source,
+      destination,
+      courses,
+      loadedRequirements,
+      openAlert
+    );
     setCourses(newCourses);
     return;
   }
@@ -50,26 +55,17 @@ const maybeAddCourseRequirement = (
   loadedRequirements,
   openAlert
 ) => {
-  
   const requirementId = source.droppableId.substr("req".length);
   const newCourse = loadedRequirements[requirementId];
-  if (
-    findCourseById(newCourse.content.id, courses) !== -1
-  ) {
+  if (findCourseById(newCourse.content.id, courses) !== -1) {
     openAlert("This class was already added!", "error");
     return courses;
   }
-  const newCourses = copyItemTo(
-    courses,
-    destination,
-    newCourse,
-    newCourse.id
-  );
+  const newCourses = copyItemTo(courses, destination, newCourse, newCourse.id);
   if (newCourses.length > MAX_COURSE_LIMIT) {
     openAlert(`Max course limit: ${MAX_COURSE_LIMIT}`);
     return courses;
   }
-  delete loadedRequirements[requirementId];
   return newCourses;
 };
 
@@ -169,26 +165,10 @@ function CoursePlanner(props) {
       }
     >
       <Grid container className={classes.containerGrid}>
-        <Grid
-          item
-          xs={12}
-          s={7}
-          md={7}
-          lg={7}
-          xl={7}
-          className={classes.itemGrid}
-        >
+        <Grid item xs={12} s={7} md={7} lg={7} xl={7}>
           {left}
         </Grid>
-        <Grid
-          item
-          xs={12}
-          s={5}
-          md={5}
-          lg={5}
-          xl={5}
-          className={classes.itemGrid}
-        >
+        <Grid item xs={12} s={5} md={5} lg={5} xl={5}>
           {right}
         </Grid>
       </Grid>
