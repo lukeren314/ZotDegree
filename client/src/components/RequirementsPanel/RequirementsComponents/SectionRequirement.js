@@ -34,7 +34,7 @@ class SectionRequirement extends PureComponent {
         </ListItem>
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
           <List>
-            {requirement.courses.map((subrequirement, index) => {
+            {requirement.subrequirements.map((subrequirement, index) => {
               return (
                 <Requirement
                   key={requirement.comment + index}

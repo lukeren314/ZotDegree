@@ -29,18 +29,16 @@ const interpretRequirements = (requirements, courseIdSet) =>
 
 const interpretRequirementsList = (requirements, courseIdSet) =>
   requirements.map((requirement) => {
-    if (["section", "or"].includes(requirement.type)) {
+    if (["section", "or", "series"].includes(requirement.type)) {
       return {
         ...requirement,
-        courses: interpretRequirementsList(requirement.courses, courseIdSet),
+        subrequirements: interpretRequirementsList(requirement.subrequirements, courseIdSet),
       };
     }
-    if (["single", "series"].includes(requirement.type)) {
+    if (["single"].includes(requirement.type)) {
       return {
         ...requirement,
-        checked: requirement.courses.map((courseId) =>
-          courseIdSet.has(courseId)
-        ),
+        checked: courseIdSet.has(requirement.course),
       };
     }
     return requirement;

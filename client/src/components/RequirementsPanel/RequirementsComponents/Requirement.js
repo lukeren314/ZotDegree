@@ -4,6 +4,7 @@ import HeaderRequirement from "./HeaderRequirement";
 import OrRequirement from "./OrRequirement";
 import CourseRequirement from "./CourseRequirement";
 import SectionRequirement from "./SectionRequirement";
+import SeriesRequirement from "./SeriesRequirement";
 
 function Requirement(props) {
   const { requirement } = props;
@@ -15,7 +16,7 @@ function Requirement(props) {
   } else if (requirement.type === "single") {
     RequirementType = CourseRequirement;
   } else if (requirement.type === "series") {
-    RequirementType = CourseRequirement;
+    RequirementType = SeriesRequirement;
   } else if (requirement.type === "or") {
     RequirementType = OrRequirement;
   } else if (requirement.type === "section") {

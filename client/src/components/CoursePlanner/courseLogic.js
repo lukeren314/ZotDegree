@@ -73,7 +73,6 @@ function getYearQuarter(droppableId) {
 
 function findDraggable(list, year, quarter, draggableIndex) {
   let count = 0;
-  console.log(list, year, quarter, draggableIndex);
   for (let i = 0; i < list.length; ++i) {
     const item = list[i];
     if (

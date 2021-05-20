@@ -287,11 +287,11 @@ class App extends PureComponent {
 
     this.nestedAssignIds = (requirements) =>
       requirements.map((requirement) => {
-        if (["section", "or"].includes(requirement.type)) {
+        if (["section", "or", "series"].includes(requirement.type)) {
           return {
             ...requirement,
             id: this.counter++,
-            courses: this.nestedAssignIds(requirement.courses),
+            subrequirements: this.nestedAssignIds(requirement.subrequirements),
           };
         }
         return {
@@ -306,7 +306,7 @@ class App extends PureComponent {
     this.stopLoadingRequirements = () =>
       this.setState({ loadingRequirements: false });
 
-    this.loadCourse = (courseId) => {
+    this.loadCourse = (requirementId, courseId) => {
       if (this.state.loadingGetCourse) {
         return;
       }
@@ -317,14 +317,16 @@ class App extends PureComponent {
           this.openAlert("Get Course Failed! " + jsonData.error, "error");
           return;
         }
-        const newLoadedCourses = {
-          ...this.state.loadedCourses,
-          [courseId]: { content: jsonData.course, id: idManager.getNextId() },
+        const loadedRequirements = {
+          [requirementId]: {
+            content: jsonData.course,
+            id: idManager.getNextId(),
+          },
         };
         this.setState({
           requirementsContext: {
             ...this.state.requirementsContext,
-            loadedCourses: newLoadedCourses,
+            loadedRequirements,
           },
         });
       });
@@ -372,7 +374,7 @@ class App extends PureComponent {
       loadingRequirements: false,
       loadingGetCourse: false,
       requirementsContext: {
-        loadedCourses: {},
+        loadedRequirements: {},
         loadCourse: this.loadCourse,
       },
     };
@@ -433,7 +435,7 @@ class App extends PureComponent {
         ></NavBar>
         <CoursePlanner
           courses={courses}
-          loadedCourses={requirementsContext.loadedCourses}
+          loadedRequirements={requirementsContext.loadedRequirements}
           setCourses={this.setCourses}
           courseSearchList={courseSearchList}
           openAlert={this.openAlert}

@@ -10,7 +10,6 @@ const styles = (theme) => ({
 
 function CoursePopover(props) {
   const { anchorEl, handleClose, course, classes } = props;
-  console.log(course);
   return (
     <Popover
       anchorEl={anchorEl}

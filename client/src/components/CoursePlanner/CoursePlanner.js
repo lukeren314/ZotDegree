@@ -17,7 +17,7 @@ const onDragEnd = (
   courseSearchList,
   setCourses,
   openAlert,
-  loadedCourses
+  loadedRequirements
 ) => {
   const { source, destination } = result;
   if (
@@ -29,7 +29,7 @@ const onDragEnd = (
     return;
   }
   if (source.droppableId.startsWith("req")) {
-    const newCourses = maybeAddCourseRequirement(source, destination, courses, loadedCourses, openAlert);
+    const newCourses = maybeAddCourseRequirement(source, destination, courses, loadedRequirements, openAlert);
     setCourses(newCourses);
     return;
   }
@@ -47,29 +47,29 @@ const maybeAddCourseRequirement = (
   source,
   destination,
   courses,
-  loadedCourses,
+  loadedRequirements,
   openAlert
 ) => {
   
-  const courseId = source.droppableId.substr("req".length);
+  const requirementId = source.droppableId.substr("req".length);
+  const newCourse = loadedRequirements[requirementId];
   if (
-    findCourseById(courseId, courses) !== -1
+    findCourseById(newCourse.content.id, courses) !== -1
   ) {
     openAlert("This class was already added!", "error");
     return courses;
   }
-  const newCourse = loadedCourses[courseId];
   const newCourses = copyItemTo(
     courses,
     destination,
     newCourse,
-    idManager.getNextId()
+    newCourse.id
   );
   if (newCourses.length > MAX_COURSE_LIMIT) {
     openAlert(`Max course limit: ${MAX_COURSE_LIMIT}`);
     return courses;
   }
-  delete loadedCourses[courseId];
+  delete loadedRequirements[requirementId];
   return newCourses;
 };
 
@@ -150,7 +150,7 @@ function CoursePlanner(props) {
     courses,
     setCourses,
     courseSearchList,
-    loadedCourses,
+    loadedRequirements,
     children,
   } = props;
   const left = children[0];
@@ -164,7 +164,7 @@ function CoursePlanner(props) {
           courseSearchList,
           setCourses,
           openAlert,
-          loadedCourses
+          loadedRequirements
         )
       }
     >

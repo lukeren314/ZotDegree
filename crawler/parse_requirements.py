@@ -117,7 +117,6 @@ def parse_requirements_table(courselist_table):
                     requirements.append({
                         "type": "comment",
                         "comment": "or",
-                        "courses": []
                     })
                     continue
                 # otherwise, be prepared to combine the next series/single with the previous
@@ -144,7 +143,7 @@ def parse_requirements_table(courselist_table):
         if "-" in course_id:
             course_requirement = {
                 "type": "series",
-                "courses": []
+                "subrequirements": []
             }
             course_ids = [c_id.strip()
                           for c_id in course_id.split("-")]
@@ -156,26 +155,24 @@ def parse_requirements_table(courselist_table):
             for i, course_id in enumerate(course_ids):
                 if i > 0 and not course_id.startswith(course_department):
                     course_ids[i] = course_department.upper()+" "+course_id
-            course_requirement["courses"] = course_ids
+            course_requirement["subrequirements"] = [
+                {"type": "single", "course": course_id} for course_id in course_ids]
         else:
             # handle the single course case
             course_requirement = {
                 "type": "single",
-                "courses": [course_id]
+                "course": course_id
             }
         # if we previously encountered an or
         if len(requirements) > 0 and ("orclass" in class_ or next_or):
             # see if we have multiple ors, if so, just merge into the previous one
             if requirements[-1]["type"] != "or":
-                prev_class = requirements[-1]
-                type_ = "or"
-                courses = [prev_class]
                 requirements[-1] = {
-                    "type": type_,
-                    "courses": courses
+                    "type": "or",
+                    "subrequirements": [requirements[-1]]
                 }
             # add the course to the ors
-            requirements[-1]["courses"].append(course_requirement)
+            requirements[-1]["subrequirements"].append(course_requirement)
             next_or = False
             continue
         requirements.append(course_requirement)
@@ -197,7 +194,7 @@ def nest_requirements_under_headers(requirements):
         return {
             "type": "section",
             "comment": header,
-            "courses": current_requirements
+            "subrequirements": current_requirements
         }
     for requirement in requirements:
         if requirement["type"] == "header":

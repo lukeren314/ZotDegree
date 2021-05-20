@@ -13,31 +13,32 @@ function CourseRequirementItem(props) {
   return (
     <Fragment>
       <RequirementsContext.Consumer>
-        {({ loadedCourses, loadCourse }) =>
-          requirement.courses.map((course, index) => (
-            <ListItem
-              key={course}
-              button={!requirement.checked[index]}
-              onClick={() => !(course in loadedCourses) && loadCourse(course)}
-            >
-              {requirement.checked[index] || !(course in loadedCourses) ? (
-                <ListItemText
-                  primary={course}
-                  primaryTypographyProps={{ variant: "body2" }}
-                />
-              ) : (
-                <CourseDroppable
-                  droppableId={"req" + course}
-                  courses={[loadedCourses[course]]}
-                  itemWidth="12vw"
-                />
-              )}
-              <ListItemSecondaryAction>
-                <Checkbox checked={requirement.checked[index]} />
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))
-        }
+        {({ loadedRequirements, loadCourse }) => (
+          <ListItem
+            dense={true}
+            button={!requirement.checked}
+            onClick={() =>
+              !(requirement.id in loadedRequirements) &&
+              loadCourse(requirement.id, requirement.course)
+            }
+          >
+            {requirement.checked || !(requirement.id in loadedRequirements) ? (
+              <ListItemText
+                primary={requirement.course}
+                primaryTypographyProps={{ variant: "body2" }}
+              />
+            ) : (
+              <CourseDroppable
+                droppableId={"req" + requirement.id}
+                courses={[loadedRequirements[requirement.id]]}
+                itemWidth="12vw"
+              />
+            )}
+            <ListItemSecondaryAction>
+              <Checkbox checked={requirement.checked} />
+            </ListItemSecondaryAction>
+          </ListItem>
+        )}
       </RequirementsContext.Consumer>
     </Fragment>
   );
