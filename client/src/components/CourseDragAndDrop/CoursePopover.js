@@ -26,10 +26,10 @@ function CoursePopover(props) {
         <Typography variant="subtitle2"></Typography>
         <Typography variant="caption">{course.description}</Typography>
         <Typography variant="subtitle2">
-          {course.prerequisites && "Prerequisites: " + course.prerequisites}
+          {course.prerequisite && "Prerequisites: " + course.prerequisite}
         </Typography>
         <Typography variant="subtitle2">
-          {course.corequisite && "Corequisites: " + course.corequisites}
+          {course.corequisite && "Corequisites: " + course.corequisite}
         </Typography>
         <Typography variant="subtitle2">
           {course.same_as && "Same as: " + course.same_as}
