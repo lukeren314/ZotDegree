@@ -264,7 +264,7 @@ class App extends PureComponent {
       this.startLoadingRequirements(async () => {
         let jsonData = await apiGetRequirements(newDegrees);
         this.stopLoadingRequirements();
-        if ("errpr" in jsonData) {
+        if ("error" in jsonData) {
           this.openAlert("Get Requirements Failed! " + jsonData.error, "error");
           return;
         }

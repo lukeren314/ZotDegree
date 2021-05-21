@@ -5,7 +5,9 @@ import { calculateTotalUnits, getUnitsStr } from "../CoursePlanner/courseLogic";
 
 const styles = () => ({
   quarterPlanHeader: {
-    backgroundColor: "silver",
+    paddingLeft:"4px",
+    paddingRight:"4px",
+    backgroundColor: "gray",
   },
   quarterPlanUnits: { float: "right", textAlign: "right", fontSize: "12px" },
 });
@@ -25,6 +27,7 @@ function QuarterPlan(props) {
         droppableId={year + quarter}
         courses={quarterPlan}
         isDeletable={true}
+        backgroundColor={"silver"}
       />
     </Grid>
   );
