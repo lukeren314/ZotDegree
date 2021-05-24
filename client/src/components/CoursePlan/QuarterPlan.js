@@ -7,7 +7,7 @@ const styles = () => ({
   quarterPlanHeader: {
     paddingLeft:"4px",
     paddingRight:"4px",
-    backgroundColor: "gray",
+    backgroundColor: "silver",
   },
   quarterPlanUnits: { float: "right", textAlign: "right", fontSize: "12px" },
 });
@@ -27,7 +27,7 @@ function QuarterPlan(props) {
         droppableId={year + quarter}
         courses={quarterPlan}
         isDeletable={true}
-        backgroundColor={"silver"}
+        backgroundColor={"#b0b0b0"}
       />
     </Grid>
   );
