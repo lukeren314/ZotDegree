@@ -87,6 +87,7 @@ class App extends PureComponent {
           numYears,
           degrees: degrees.map((degree) => degree.value),
           coursePlans: this.prepareCourses(coursePlans),
+          checkedRequirements: this.requirementsContext.checkedRequirements,
         },
       };
     };
@@ -101,7 +102,8 @@ class App extends PureComponent {
       );
 
     this.setUserData = (userData) => {
-      const { degrees, coursePlans, startYear, numYears } = userData;
+      const { degrees, coursePlans, startYear, numYears, checkedRequirements } =
+        userData;
       const preparedCoursePlans = this.getPreparedCourses(coursePlans);
       this.setState({
         startYear,
@@ -109,6 +111,10 @@ class App extends PureComponent {
         degrees: degrees.map((degree) => ({ value: degree, label: degree })),
         coursePlans: preparedCoursePlans,
         courses: preparedCoursePlans[this.state.currentCoursePlan],
+        requirementsContext: {
+          ...this.state.requirementsContext,
+          checkedRequirements,
+        },
       });
       this.getRequirements(degrees);
     };
@@ -268,37 +274,10 @@ class App extends PureComponent {
           this.openAlert("Get Requirements Failed! " + jsonData.error, "error");
           return;
         }
-        const requirements = this.assignRequirementsIds(jsonData);
+        const requirements = jsonData;
         this.setState({ requirements });
       });
     };
-
-    this.assignRequirementsIds = (requirements) => {
-      this.counter = 0;
-      for (let subRequirement of requirements) {
-        for (let requirementsList of subRequirement.requirementsLists) {
-          requirementsList.requirements = this.nestedAssignIds(
-            requirementsList.requirements
-          );
-        }
-      }
-      return requirements;
-    };
-
-    this.nestedAssignIds = (requirements) =>
-      requirements.map((requirement) => {
-        if (["section", "or", "series"].includes(requirement.type)) {
-          return {
-            ...requirement,
-            id: this.counter++,
-            subrequirements: this.nestedAssignIds(requirement.subrequirements),
-          };
-        }
-        return {
-          ...requirement,
-          id: this.counter++,
-        };
-      });
 
     this.startLoadingRequirements = (callback) =>
       this.setState({ loadingRequirements: true }, callback);
@@ -339,7 +318,8 @@ class App extends PureComponent {
       this.setState({ loadingGetCourse: false });
 
     this.highlightCourse = (courseId) => {
-      const highlightedCourses = this.state.coursePlanContext.highlightedCourses;
+      const highlightedCourses =
+        this.state.coursePlanContext.highlightedCourses;
       if (highlightedCourses.includes(courseId)) {
         return;
       }
@@ -352,7 +332,8 @@ class App extends PureComponent {
     };
 
     this.stopHighlightCourse = (courseId) => {
-      const highlightedCourses = this.state.coursePlanContext.highlightedCourses;
+      const highlightedCourses =
+        this.state.coursePlanContext.highlightedCourses;
       if (!highlightedCourses.includes(courseId)) {
         return;
       }
@@ -363,6 +344,36 @@ class App extends PureComponent {
             (val) => val !== courseId
           ),
         },
+      });
+    };
+
+    this.checkRequirement = (courseId) => {
+      const checkedRequirements =
+        this.state.requirementsContext.checkedRequirements;
+      if (checkedRequirements.includes(courseId)) {
+        this.uncheckRequirement(courseId);
+        return;
+      }
+      this.setState({
+        requirementsContext: {
+          ...this.state.requirementsContext,
+          checkedRequirements: [...checkedRequirements, courseId],
+        },
+        changesSaved: false,
+      });
+    };
+
+    this.uncheckRequirement = (courseId) => {
+      const checkedRequirements =
+        this.state.requirementsContext.checkedRequirements;
+      this.setState({
+        requirementsContext: {
+          ...this.state.requirementsContext,
+          checkedRequirements: checkedRequirements.filter(
+            (val) => val !== courseId
+          ),
+        },
+        changesSaved: false,
       });
     };
 
@@ -403,10 +414,12 @@ class App extends PureComponent {
       loadingRequirements: false,
       loadingGetCourse: false,
       requirementsContext: {
+        checkedRequirements: [],
         loadedRequirements: {},
         loadCourse: this.loadCourse,
         highlightCourse: this.highlightCourse,
         stopHighlightCourse: this.stopHighlightCourse,
+        checkRequirement: this.checkRequirement,
       },
     };
   }
