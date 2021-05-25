@@ -3,6 +3,7 @@ from util.utils import save_json
 from scrape_schools import scrape_schools
 from scrape_degrees import scrape_degrees
 from scrape_courses import scrape_course_departments
+from parse_requirements import parse_universal_requirements
 import os
 
 COURSES_URL = "http://catalogue.uci.edu/allcourses/"
@@ -11,6 +12,7 @@ REQUIREMENTS_URL = "http://catalogue.uci.edu/informationforadmittedstudents/requ
 
 def scrape_catalogue(soup_cache, data_path):
     scrape_and_save_course_departments(soup_cache, data_path)
+    scrape_and_save_universal_requirements(soup_cache, data_path)
     scrape_and_save_degrees(soup_cache, data_path)
     scrape_and_save_schools(soup_cache, data_path)
 
@@ -84,6 +86,10 @@ def create_ge_index(courses):
                 ge_index[course_ge].append(course["id"])
     return ge_index
 
+
+def scrape_and_save_universal_requirements(soup_cache, data_path):
+    universal_requirements = parse_universal_requirements()
+    save_data(data_path, "universal_requirements.json", universal_requirements)
 
 def scrape_and_save_degrees(soup_cache, data_path):
     degrees = scrape_degrees(soup_cache)

@@ -15,6 +15,7 @@ const User = mongoose.Schema({
     degrees: [String],
     startYear: Number,
     numYears: Number,
+    checkedRequirements: [String],
   },
 });
 

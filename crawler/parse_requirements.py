@@ -1,6 +1,61 @@
 
 from util.soups import get_clean_text
 
+id_counter = 0
+
+
+def parse_universal_requirements():
+    # hard coded for now
+    requirements = {
+        "header": "University Requirements",
+        "requirements": [
+            {
+                "type": "comment",
+                "comment": "Units: 180"
+            },
+            {
+                "type": "section",
+                "comment": "General Education Requirements",
+                "subrequirements": [
+                    {
+                        "type": "comment",
+                        "comment": "I. Writing (two lower-division plus one upper-division course)"
+                    },
+                    {
+                        "type": "comment",
+                        "comment": "II. Science and Technology (three courses)"
+                    },
+                    {
+                        "type": "comment",
+                        "comment": "III. Social and Behavioral Sciences (three courses)"
+                    },
+                    {
+                        "type": "comment",
+                        "comment": "IV. Arts and Humanities (three courses)"
+                    },
+                    {
+                        "type": "comment",
+                        "comment": "V. Quantitative, Symbolic, and Computational Reasoning, with subcategories Va and Vb (three courses that may also satisfy another GE category)"
+                    },
+                    {
+                        "type": "comment",
+                        "comment": "VI. Language Other Than English (one course)"
+                    },
+                    {
+                        "type": "comment",
+                        "comment": "VII. Multicultural Studies (one course that may also satisfy another GE category)"
+                    },
+                    {
+                        "type": "comment",
+                        "comment": "VIII. International/Global Issues (one course that may also satisfy another GE category)"
+                    }
+                ]
+            }
+        ]
+    }
+    requirements["requirements"] = assign_requirements_ids(requirements["requirements"])
+    return requirements
+
 
 def parse_requirements(soup):
     reqstextcontainer = soup.find(id="requirementstextcontainer")
@@ -177,6 +232,7 @@ def parse_requirements_table(courselist_table):
             continue
         requirements.append(course_requirement)
     requirements = nest_requirements_under_headers(requirements)
+    requirements = assign_requirements_ids(requirements)
     return requirements
 
 
@@ -213,6 +269,17 @@ def nest_requirements_under_headers(requirements):
         if current_requirements:
             new_requirements.extend(current_requirements)
     return new_requirements
+
+
+def assign_requirements_ids(requirements):
+    global id_counter
+    for i in range(len(requirements)):
+        requirements[i]["id"] = id_counter
+        id_counter += 1
+        if "subrequirements" in requirements[i]:
+            requirements[i]["subrequirements"] = assign_requirements_ids(
+                requirements[i]["subrequirements"])
+    return requirements
 
 
 def test_requirements_computer_science(soup_cache):
