@@ -1,22 +1,32 @@
 import DegreeSearchBar from "./DegreeSearchBar";
 import Requirements from "./Requirements";
 import { Fragment } from "react";
+import { connect } from "react-redux";
+import { maybeSetDegrees } from "../../actions";
 
 function RequirementsPanel(props) {
-  const { degrees, requirements, courses, isLoading, setDegrees } = props;
+  const {
+    degrees,
+    requirements,
+    coursePlan,
+    isFetchingRequirements,
+    dispatch
+  } = props;
+  const dispatchDegrees = (degrees_) => dispatch(maybeSetDegrees(degrees_))
   return (
     <Fragment>
-      <DegreeSearchBar
-        degrees={degrees}
-        setDegrees={(_, newDegrees) => setDegrees(newDegrees)}
-      />
+      <DegreeSearchBar degrees={degrees} setDegrees={dispatchDegrees} />
       <Requirements
         requirements={requirements}
-        courses={courses}
-        isLoading={isLoading}
+        coursePlan={coursePlan}
+        isLoading={isFetchingRequirements}
       />
     </Fragment>
   );
 }
 
-export default RequirementsPanel;
+const mapStateToProps = (state) => ({
+  ...state.requirements,
+  coursePlan: state.coursePlans.coursePlan,
+});
+export default connect(mapStateToProps)(RequirementsPanel);

@@ -1,7 +1,7 @@
 import CourseDraggable from "./CourseDraggable";
 
 function CourseDroppableBase(props) {
-  const { courses, isDeletable, itemWidth } = props;
+  const { courses, ...other } = props;
   return (
     <div>
       {courses.map((course, index) => (
@@ -9,8 +9,7 @@ function CourseDroppableBase(props) {
           key={course.id}
           course={course}
           index={index}
-          isDeletable={isDeletable}
-          itemWidth={itemWidth}
+          {...other}
         />
       ))}
     </div>

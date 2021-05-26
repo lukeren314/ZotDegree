@@ -1,6 +1,11 @@
 import { Grid } from "@material-ui/core";
 import LoadingWheel from "../App/LoadingWheel";
 import YearPlan from "./YearPlan";
+import { withStyles } from "@material-ui/styles";
+
+const styles = () => ({
+  coursePlanGrid: { overflow: "auto", height: "75vh" },
+});
 
 const getYearPlans = (coursePlan, numYears) => {
   // initialize each list to []
@@ -14,13 +19,13 @@ const getYearPlans = (coursePlan, numYears) => {
 };
 
 function CoursePlan(props) {
-  const { courses, numYears, startYear, isLoading } = props;
+  const { coursePlan, numYears, startYear, isLoading, classes } = props;
   if (isLoading) {
     return <LoadingWheel isLoading={isLoading} />;
   }
-  const yearPlans = getYearPlans(courses, numYears);
+  const yearPlans = getYearPlans(coursePlan, numYears);
   return (
-    <Grid style={{overflow: "auto", height: "75vh"}}>
+    <Grid className={classes.coursePlanGrid}>
       {[...Array(numYears).keys()].map((year) => (
         <YearPlan
           key={year + "year"}
@@ -32,4 +37,4 @@ function CoursePlan(props) {
     </Grid>
   );
 }
-export default CoursePlan;
+export default withStyles(styles)(CoursePlan);

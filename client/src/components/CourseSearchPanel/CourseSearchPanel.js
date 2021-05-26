@@ -6,6 +6,8 @@ import CourseSearchList from "./CourseSearchList";
 import departmentsList from "../../json/course_departments_list.json";
 import { withStyles } from "@material-ui/styles";
 import { PureComponent } from "react";
+import { fetchSearchListIfNeeded, openAlert } from "../../actions";
+import { connect } from "react-redux";
 
 const styles = () => ({
   courseSearchButton: {
@@ -31,15 +33,16 @@ class CourseSearchPanel extends PureComponent {
       this.setState({ geCategories: newGECategories });
     };
 
-    this.doSearchCourse = (searchCourses, openAlert) => {
+    this.doSearchCourse = () => {
       const { department, courseNumber, geCategories } = this.state;
+      const { dispatch } = this.props;
       if (department.value === "ALL" && geCategories.length === 0) {
-        openAlert("You must specify a department or GE Categories!");
+        dispatch(openAlert("You must specify a department or GE Categories!"));
         return;
       }
 
       if (!courseNumber.match(/^([0-9]+[A-Za-z]* ?(- ?[0-9]+[A-Za-z]*)?)?$/g)) {
-        openAlert("Course number/range invalid!");
+        dispatch(openAlert("Course number/range invalid!", "error"));
         return;
       }
       const query = {
@@ -47,7 +50,7 @@ class CourseSearchPanel extends PureComponent {
         courseNumber,
         geCategories,
       };
-      searchCourses(query);
+      dispatch(fetchSearchListIfNeeded(query));
     };
 
     this.state = {
@@ -57,14 +60,9 @@ class CourseSearchPanel extends PureComponent {
     };
   }
   render() {
-    const {
-      classes,
-      openAlert,
-      searchCourses,
-      courseSearchList,
-      isLoading,
-    } = this.props;
+    const { searchList, isFetching, classes } = this.props;
     const { department, courseNumber, geCategories } = this.state;
+
     return (
       <div>
         {/* Replace with single search bar? */}
@@ -84,13 +82,19 @@ class CourseSearchPanel extends PureComponent {
           variant="contained"
           color="primary"
           className={classes.courseSearchButton}
-          onClick={() => this.doSearchCourse(searchCourses, openAlert)}
+          onClick={() => this.doSearchCourse()}
         >
           Search
         </Button>
-        <CourseSearchList courseList={courseSearchList} isLoading={isLoading} />
+        <CourseSearchList
+          searchList={searchList}
+          isLoading={isFetching}
+        />
       </div>
     );
   }
 }
-export default withStyles(styles)(CourseSearchPanel);
+
+const mapStateToProps = (state) => state.courseSearch;
+
+export default connect(mapStateToProps)(withStyles(styles)(CourseSearchPanel));

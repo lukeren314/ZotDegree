@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { Fragment } from "react";
-import { getUnitsStr } from "../CoursePlanner/courseLogic";
+import { getUnitsStr } from "../../util/courseLogic";
 import CourseDraggable from "./CourseDraggable";
 
 function Row(props) {
@@ -47,11 +47,7 @@ function TableHeader() {
 }
 
 function CourseDroppableTable(props) {
-  const {
-    courses,
-    isDeletable,
-    itemWidth,
-  } = props;
+  const { courses, ...other } = props;
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table" size="small">
@@ -62,12 +58,7 @@ function CourseDroppableTable(props) {
               course={course.content}
               key={course.id}
               courseDraggable={
-                <CourseDraggable
-                  course={course}
-                  index={index}
-                  isDeletable={isDeletable}
-                  itemWidth={itemWidth}
-                />
+                <CourseDraggable course={course} index={index} {...other} />
               }
             />
           ))}

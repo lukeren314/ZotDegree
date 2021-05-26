@@ -1,9 +1,9 @@
 import { Typography } from "@material-ui/core";
-import { calculateTotalUnits, getUnitsStr } from "../CoursePlanner/courseLogic";
+import { calculateTotalUnits, getUnitsStr } from "../../util/courseLogic";
 
 function TotalUnitsCount(props) {
-  const { courses } = props;
-  const units = calculateTotalUnits(courses.map((course) => course.content));
+  const { coursePlan } = props;
+  const units = calculateTotalUnits(coursePlan.map((course) => course.content));
   return <Typography>Total: {getUnitsStr(units)} Units</Typography>;
 }
 

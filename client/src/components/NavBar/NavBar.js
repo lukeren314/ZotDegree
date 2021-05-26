@@ -1,13 +1,15 @@
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-import LoadingWheel from "../App/LoadingWheel";
-import SaveLoadButtons from "../NavBar/SaveLoadButtons";
+import { connect } from "react-redux";
+import {
+  loadUserDataIfNeeded,
+  saveUserDataIfNeeded,
+  saveRememberPassword,
+  setUserKey,
+} from "../../actions";
+import SaveLoadButtons from "./SaveLoadButtons/SaveLoadButtons";
 import AboutButton from "./AboutButton";
+import ChangesSaved from "./ChangesSaved";
 import DonateButton from "./DonateButton";
 import ExportButton from "./ExportButton";
 import SuggestionsButton from "./SuggestionsButton";
@@ -20,18 +22,19 @@ const styles = () => ({
 function NavBar(props) {
   const {
     userKey,
-    setUserKey,
     rememberPassword,
-    setRememberPassword,
-    saveUserData,
-    loadUserData,
-    isLoadingUserDataSave,
-    changesSaved,
-    courses,
+    coursePlan,
     startYear,
     numYears,
     classes,
+    dispatch,
   } = props;
+  const dispatchUserKey = (userKey) => dispatch(setUserKey(userKey));
+  const dispatchRememberPassword = (rememberPassword) =>
+    dispatch(saveRememberPassword(rememberPassword));
+  const saveUserData = () => dispatch(saveUserDataIfNeeded());
+  const loadUserData = () => dispatch(loadUserDataIfNeeded());
+
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
@@ -40,27 +43,28 @@ function NavBar(props) {
         </Typography>
         <SaveLoadButtons
           userKey={userKey}
-          setUserKey={setUserKey}
           rememberPassword={rememberPassword}
-          setRememberPassword={setRememberPassword}
+          setUserKey={dispatchUserKey}
+          setRememberPassword={dispatchRememberPassword}
           saveUserData={saveUserData}
           loadUserData={loadUserData}
         />
         <SuggestionsButton />
         <AboutButton />
         <DonateButton />
-        <ExportButton courses={courses} startYear={startYear} numYears={numYears}/>
-        <Box style={{ marginLeft: "5px" }}>
-          {isLoadingUserDataSave ? (
-            <LoadingWheel isLoading={isLoadingUserDataSave} />
-          ) : (
-            <Typography color="secondary" variant="caption">
-              {changesSaved ? "Changes Saved" : "*Unsaved changes"}
-            </Typography>
-          )}
-        </Box>
+        <ExportButton
+          coursePlan={coursePlan}
+          startYear={startYear}
+          numYears={numYears}
+        />
+        <ChangesSaved />
       </Toolbar>
     </AppBar>
   );
 }
-export default withStyles(styles)(NavBar);
+
+const mapStateToProps = (state) => ({
+  ...state.userData,
+  ...state.coursePlans,
+});
+export default connect(mapStateToProps)(withStyles(styles)(NavBar));

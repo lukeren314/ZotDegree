@@ -8,75 +8,81 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import CourseDroppable from "../../CourseDragAndDrop/CourseDroppable";
-import RequirementsContext from "../../../contexts/RequirementsContext";
+import { connect } from "react-redux";
+import {
+  checkRequirement,
+  fetchCourseIfNeeded,
+  highlightCourse,
+  unhighlightCourse,
+  unloadCourse,
+} from "../../../actions";
+import { REQUIREMENTS_PREFIX } from "../../CoursePlanner/dragLogic";
 
 function CourseRequirementItem(props) {
-  const { requirement } = props;
+  const { requirement, loadedRequirements, checkedRequirements, dispatch } =
+    props;
   return (
     <Fragment>
-      <RequirementsContext.Consumer>
-        {({
-          loadedRequirements,
-          loadCourse,
-          highlightCourse,
-          stopHighlightCourse,
-          checkedRequirements,
-          checkRequirement,
-        }) => (
-          <ListItem
-            dense={true}
-            button={
-              requirement.checked || !(requirement.id in loadedRequirements)
-            }
-            onClick={() =>
-              !(requirement.id in loadedRequirements) &&
-              loadCourse(requirement.id, requirement.course)
-            }
-            onMouseEnter={() =>
-              requirement.checked && highlightCourse(requirement.course)
-            }
-            onMouseLeave={() =>
-              requirement.checked && stopHighlightCourse(requirement.course)
-            }
-          >
-            {requirement.checked || !(requirement.id in loadedRequirements) ? (
-              <Tooltip title="Click me to add class">
-                <ListItemText
-                  primary={requirement.course}
-                  primaryTypographyProps={{ variant: "body2" }}
-                />
-              </Tooltip>
-            ) : (
-              <CourseDroppable
-                droppableId={"req" + requirement.id}
-                courses={[loadedRequirements[requirement.id]]}
-                itemWidth="12vw"
-              />
-            )}
-            <ListItemSecondaryAction>
-              <FormControlLabel
-                control={<Checkbox checked={requirement.checked} />}
-                label="Satisfied"
-                labelPlacement="start"
-              />
-              <Tooltip title="Satisfied by approved AP test or Community College credit">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkedRequirements.includes(requirement.course)}
-                      onClick={() => checkRequirement(requirement.course)}
-                    />
-                  }
-                  label="AP/CC"
-                  labelPlacement="start"
-                />
-              </Tooltip>
-            </ListItemSecondaryAction>
-          </ListItem>
+      <ListItem
+        dense={true}
+        button={requirement.checked || !(requirement.id in loadedRequirements)}
+        onClick={() =>
+          !(requirement.id in loadedRequirements) &&
+          dispatch(fetchCourseIfNeeded(requirement.id, requirement.course))
+        }
+        onMouseEnter={() =>
+          requirement.checked && dispatch(highlightCourse(requirement.course))
+        }
+        onMouseLeave={() =>
+          requirement.checked && dispatch(unhighlightCourse(requirement.course))
+        }
+      >
+        {requirement.checked || !(requirement.id in loadedRequirements) ? (
+          <Tooltip title={requirement.checked ? "" : "Click me to add class"}>
+            <ListItemText
+              primary={requirement.course}
+              primaryTypographyProps={{ variant: "body2" }}
+            />
+          </Tooltip>
+        ) : (
+          <CourseDroppable
+            droppableId={REQUIREMENTS_PREFIX + requirement.id}
+            courses={[loadedRequirements[requirement.id]]}
+            itemWidth="12vw"
+            isDeletable={true}
+            deleteAction={unloadCourse}
+          />
         )}
-      </RequirementsContext.Consumer>
+        <ListItemSecondaryAction>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={
+                  requirement.checked ||
+                  checkedRequirements.includes(requirement.course)
+                }
+              />
+            }
+            label="Satisfied"
+            labelPlacement="start"
+          />
+          <Tooltip title="Satisfied by approved AP test or Community College credit">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checkedRequirements.includes(requirement.course)}
+                  onClick={() => dispatch(checkRequirement(requirement.course))}
+                />
+              }
+              label="AP/CC"
+              labelPlacement="start"
+            />
+          </Tooltip>
+        </ListItemSecondaryAction>
+      </ListItem>
     </Fragment>
   );
 }
 
-export default CourseRequirementItem;
+const mapStateToProps = (state) => state.requirements;
+export default connect(mapStateToProps)(CourseRequirementItem);

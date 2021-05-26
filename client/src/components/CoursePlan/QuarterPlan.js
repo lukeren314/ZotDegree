@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@material-ui/core";
 import CourseDroppable from "../CourseDragAndDrop/CourseDroppable";
 import { withStyles } from "@material-ui/styles";
-import { calculateTotalUnits, getUnitsStr } from "../CoursePlanner/courseLogic";
+import { calculateTotalUnits, getUnitsStr } from "../../util/courseLogic";
 
 const styles = () => ({
   quarterPlanHeader: {

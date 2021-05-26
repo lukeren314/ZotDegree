@@ -34,11 +34,12 @@ const createCSVContent = (courses, startYear, numYears) => {
       ...nestedCourses[year].map((quarterPlan) => quarterPlan.length)
     );
     for (let i = 0; i < maxCourses; ++i) {
-      csvContent.push(
-        nestedCourses[year].map((quarterPlan) =>
+      csvContent.push([
+        "",
+        ...nestedCourses[year].map((quarterPlan) =>
           i < quarterPlan.length ? quarterPlan[i] : ""
-        )
-      );
+        ),
+      ]);
     }
     csvContent.push(["", "", "", "", ""]);
   }
@@ -59,9 +60,9 @@ class ExportButton extends PureComponent {
     };
   }
   render() {
-    const { courses, startYear, numYears } = this.props;
+    const { coursePlan, startYear, numYears } = this.props;
     const { anchorEl } = this.state;
-    const csvData = createCSVContent(courses, startYear, numYears);
+    const csvData = createCSVContent(coursePlan, startYear, numYears);
     return (
       <div>
         <Button
@@ -86,7 +87,9 @@ class ExportButton extends PureComponent {
         >
           <List>
             <Button>
-              <CSVLink data={csvData} filename="courseplan.csv">.csv</CSVLink>
+              <CSVLink data={csvData} filename="courseplan.csv">
+                .csv
+              </CSVLink>
             </Button>
           </List>
         </Popover>

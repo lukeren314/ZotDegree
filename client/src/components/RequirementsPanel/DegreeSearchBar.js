@@ -14,7 +14,7 @@ function DegreeSearchBar(props) {
         getOptionSelected={(option, selected) =>
           option.value === selected.value
         }
-        onChange={setDegrees}
+        onChange={(_, degrees) => setDegrees(degrees)}
         renderInput={(params) => <TextField {...params} label="Degrees" />}
       />
     </div>

@@ -44,13 +44,13 @@ const interpretRequirementsList = (requirements, courseIdSet) =>
   });
 
 function Requirements(props) {
-  const { requirements, courses, isLoading } = props;
+  const { requirements, coursePlan, isLoading } = props;
   if (isLoading) {
     return <LoadingWheel isLoading={isLoading} />;
   }
   const interpretedRequirements = getInterpretedRequirements(
     requirements,
-    courses
+    coursePlan
   );
   return (
     <div>

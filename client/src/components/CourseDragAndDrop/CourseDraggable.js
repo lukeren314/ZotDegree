@@ -10,8 +10,13 @@ import { Draggable } from "react-beautiful-dnd";
 import CoursePopover from "./CoursePopover";
 import { withStyles } from "@material-ui/styles";
 import CourseDeleteButton from "./CourseDeleteButton";
-import { getUnitsStr } from "../CoursePlanner/courseLogic";
-import CoursePlanContext from "../../contexts/CoursePlanContext";
+import { getUnitsStr } from "../../util/courseLogic";
+import { connect } from "react-redux";
+import {
+  highlightCourse,
+  removeCourse,
+  unhighlightCourse,
+} from "../../actions";
 
 const styles = () => ({
   listItemSecondaryAction: {
@@ -30,7 +35,7 @@ const getItemStyle = (isDragging, draggableStyle, itemWidth, isHighlighted) => {
     padding: 0,
     margin: `0 0 ${4}px 0`,
     background: isHighlighted
-      ? "green"
+      ? "#2CA5AE"
       : isDragging
       ? "lightgreen"
       : "#0064a4",
@@ -43,8 +48,25 @@ class CourseDraggable extends PureComponent {
   constructor(props) {
     super(props);
 
+    this.highlightRelatedCourses = () => {
+      const { prerequisite_list, corequisite } = this.props.course.content;
+      prerequisite_list.map((prerequisite) =>
+        this.props.dispatch(highlightCourse(prerequisite))
+      );
+      if (corequisite) this.props.dispatch(highlightCourse(corequisite));
+    };
+
+    this.unhighlightRelatedCourses = () => {
+      const { prerequisite_list, corequisite } = this.props.course.content;
+      prerequisite_list.map((prerequisite) =>
+        this.props.dispatch(unhighlightCourse(prerequisite))
+      );
+      if (corequisite) this.props.dispatch(unhighlightCourse(corequisite));
+    };
+
     this.setSelected = (event) => {
       this.setState({ selected: event.currentTarget });
+      console.log(this.props.highlightedCourses);
     };
 
     this.handleClose = () => {
@@ -52,10 +74,12 @@ class CourseDraggable extends PureComponent {
     };
 
     this.handleHovering = () => {
+      this.highlightRelatedCourses();
       this.setState({ isHovering: true });
     };
 
     this.handleHoveringOut = () => {
+      this.unhighlightRelatedCourses();
       this.setState({ isHovering: false });
     };
 
@@ -65,70 +89,85 @@ class CourseDraggable extends PureComponent {
     };
   }
   render() {
-    const { course, index, isDeletable, itemWidth, classes } = this.props;
+    const {
+      course,
+      index,
+      isDeletable,
+      itemWidth,
+      dispatch,
+      highlightedCourses,
+      deleteAction,
+      classes,
+    } = this.props;
     const { selected, isHovering } = this.state;
     return (
       <Draggable key={course.id} draggableId={course.id} index={index}>
         {(provided, snapshot) => (
-          <CoursePlanContext.Consumer>
-            {({ removeCourseById, highlightedCourses }) => (
-              <div>
-                <Paper
-                  className={classes.courseBody}
-                  variant="outlined"
-                  onClick={this.setSelected}
-                  onMouseOver={this.handleHovering}
-                  onMouseLeave={this.handleHoveringOut}
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  style={getItemStyle(
-                    snapshot.isDragging,
-                    provided.draggableProps.style,
-                    itemWidth,
-                    highlightedCourses.includes(course.content.id)
-                  )}
-                >
-                  <List disablePadding={true}>
-                    <ListItem dense={true} selected={Boolean(selected)}>
-                      <ListItemText
-                        primary={course.content.id}
-                        primaryTypographyProps={{ color: "secondary" }}
-                        secondary={
-                          isHovering && isDeletable
-                            ? getUnitsStr(course.content.units) + " Units"
-                            : null
+          <div>
+            <Paper
+              className={classes.courseBody}
+              variant="outlined"
+              onClick={this.setSelected}
+              onMouseEnter={this.handleHovering}
+              onMouseLeave={this.handleHoveringOut}
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={getItemStyle(
+                snapshot.isDragging,
+                provided.draggableProps.style,
+                itemWidth,
+                highlightedCourses.includes(course.content.id)
+              )}
+            >
+              <List disablePadding={true}>
+                <ListItem dense={true} selected={Boolean(selected)}>
+                  <ListItemText
+                    primary={course.content.id}
+                    primaryTypographyProps={{
+                      color: snapshot.isDragging ? "primary" : "secondary",
+                    }}
+                    secondary={
+                      isHovering && isDeletable
+                        ? getUnitsStr(course.content.units) + " Units"
+                        : null
+                    }
+                    secondaryTypographyProps={{
+                      variant: "caption",
+                      color: "secondary",
+                    }}
+                  />
+                  <ListItemSecondaryAction
+                    className={classes.listItemSecondaryAction}
+                  >
+                    {isDeletable && (
+                      <CourseDeleteButton
+                        courseId={course.content.id}
+                        removeCourseById={(courseId) =>
+                          dispatch((deleteAction || removeCourse)(courseId))
                         }
-                        secondaryTypographyProps={{
-                          variant: "caption",
-                          color: "secondary",
-                        }}
                       />
-                      <ListItemSecondaryAction
-                        className={classes.listItemSecondaryAction}
-                      >
-                        {isDeletable && (
-                          <CourseDeleteButton
-                            courseId={course.content.id}
-                            removeCourseById={removeCourseById}
-                          />
-                        )}
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  </List>
-                </Paper>
-                <CoursePopover
-                  anchorEl={selected}
-                  handleClose={this.handleClose}
-                  course={course.content}
-                />
-              </div>
-            )}
-          </CoursePlanContext.Consumer>
+                    )}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </List>
+            </Paper>
+            <CoursePopover
+              anchorEl={selected}
+              handleClose={this.handleClose}
+              course={course.content}
+              PaperProps={{
+                onMouseEnter: this.handleHovering,
+                onMouseLeave: this.handleHoveringOut,
+              }}
+            />
+          </div>
         )}
       </Draggable>
     );
   }
 }
 
-export default withStyles(styles)(CourseDraggable);
+const mapStateToProps = (state) => state.coursePlans;
+
+export default connect(mapStateToProps)(withStyles(styles)(CourseDraggable));
