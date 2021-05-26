@@ -14,7 +14,7 @@ function CoursePopover(props) {
   return (
     <Popover
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "left" }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       transformOrigin={{ vertical: "top", horizontal: "left" }}
       open={Boolean(anchorEl)}
       onClose={handleClose}
