@@ -5,6 +5,7 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  Tooltip
 } from "@material-ui/core";
 import { Draggable } from "react-beautiful-dnd";
 import CoursePopover from "./CoursePopover";
@@ -66,7 +67,6 @@ class CourseDraggable extends PureComponent {
 
     this.setSelected = (event) => {
       this.setState({ selected: event.currentTarget });
-      console.log(this.props.highlightedCourses);
     };
 
     this.handleClose = () => {
@@ -93,6 +93,7 @@ class CourseDraggable extends PureComponent {
       course,
       index,
       isDeletable,
+      isAddedCourse,
       itemWidth,
       dispatch,
       highlightedCourses,
@@ -100,58 +101,68 @@ class CourseDraggable extends PureComponent {
       classes,
     } = this.props;
     const { selected, isHovering } = this.state;
+    let tooltipStr = "";
+    if (course.content.prerequisite_list.length > 0) {
+      tooltipStr += "Prerequisites: "+course.content.prerequisite_list.join(", ")+"    ";
+    }
+    if (course.content.corequisite.length > 0) {
+      tooltipStr += "Corequisite: "+course.content.corequisite;
+    }
     return (
       <Draggable key={course.id} draggableId={course.id} index={index}>
         {(provided, snapshot) => (
           <div>
-            <Paper
-              className={classes.courseBody}
-              variant="outlined"
-              onClick={this.setSelected}
-              onMouseEnter={this.handleHovering}
-              onMouseLeave={this.handleHoveringOut}
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style,
-                itemWidth,
-                highlightedCourses.includes(course.content.id)
-              )}
-            >
-              <List disablePadding={true}>
-                <ListItem dense={true} selected={Boolean(selected)}>
-                  <ListItemText
-                    primary={course.content.id}
-                    primaryTypographyProps={{
-                      color: snapshot.isDragging ? "primary" : "secondary",
-                    }}
-                    secondary={
-                      isHovering && isDeletable
-                        ? getUnitsStr(course.content.units) + " Units"
-                        : null
-                    }
-                    secondaryTypographyProps={{
-                      variant: "caption",
-                      color: "secondary",
-                    }}
-                  />
-                  <ListItemSecondaryAction
-                    className={classes.listItemSecondaryAction}
-                  >
-                    {isDeletable && (
-                      <CourseDeleteButton
-                        courseId={course.content.id}
-                        removeCourseById={(courseId) =>
-                          dispatch((deleteAction || removeCourse)(courseId))
-                        }
-                      />
-                    )}
-                  </ListItemSecondaryAction>
-                </ListItem>
-              </List>
-            </Paper>
+            <Tooltip title={tooltipStr}>
+              <Paper
+                className={classes.courseBody}
+                variant="outlined"
+                onClick={this.setSelected}
+                onMouseEnter={this.handleHovering}
+                onMouseLeave={this.handleHoveringOut}
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                style={getItemStyle(
+                  snapshot.isDragging,
+                  provided.draggableProps.style,
+                  itemWidth,
+                  isAddedCourse &&
+                    highlightedCourses.includes(course.content.id)
+                )}
+              >
+                <List disablePadding={true}>
+                  <ListItem dense={true} selected={Boolean(selected)}>
+                    <ListItemText
+                      primary={course.content.id}
+                      primaryTypographyProps={{
+                        color: snapshot.isDragging ? "primary" : "secondary",
+                      }}
+                      secondary={
+                        isHovering && isDeletable
+                          ? getUnitsStr(course.content.units) + " Units"
+                          : null
+                      }
+                      secondaryTypographyProps={{
+                        variant: "caption",
+                        color: "secondary",
+                      }}
+                    />
+                    <ListItemSecondaryAction
+                      className={classes.listItemSecondaryAction}
+                    >
+                      {isDeletable && (
+                        <CourseDeleteButton
+                          courseId={course.content.id}
+                          removeCourseById={(courseId) =>
+                            dispatch((deleteAction || removeCourse)(courseId))
+                          }
+                        />
+                      )}
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                </List>
+              </Paper>
+            </Tooltip>
             <CoursePopover
               anchorEl={selected}
               handleClose={this.handleClose}

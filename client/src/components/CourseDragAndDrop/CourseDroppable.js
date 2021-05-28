@@ -25,6 +25,7 @@ function CourseDroppable(props) {
     itemWidth,
     tableForm,
     deleteAction,
+    isAddedCourse,
     classes,
   } = props;
   const DroppableComponent = tableForm
@@ -39,6 +40,7 @@ function CourseDroppable(props) {
         >
           <DroppableComponent
             courses={courses}
+            isAddedCourse={isAddedCourse}
             isDeletable={isDeletable}
             itemWidth={itemWidth}
             deleteAction={deleteAction}

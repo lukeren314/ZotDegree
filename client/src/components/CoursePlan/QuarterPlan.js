@@ -28,6 +28,7 @@ function QuarterPlan(props) {
         courses={quarterPlan}
         isDeletable={true}
         backgroundColor={"#b0b0b0"}
+        isAddedCourse={true}
       />
     </Grid>
   );
