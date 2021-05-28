@@ -6,13 +6,6 @@ Plan out your years at UCI with ease using ZotDegree!
 
 ## Planned Features
 
-Course Highlighting - Hovering over a course requirement
-highlights that course that satisfies it in your course plan.
-
-Prerequisite/Corequisite Highlighting - Selecting an added course
-will highlight added prerequisites/corequisites in your course
-plan.
-
 Virtualize Requirements Lists - Improve the performance of
 requirements lists by virtualizing them.
 
@@ -24,9 +17,6 @@ offered that quarter and that year
 Requirement Colors - Color requirements or sections of
 requirements a certain color that also colors them in the course
 plan.
-
-Manual Checking - Add an option to manually check a course
-requirement if it was satisfied using AP/CC credit.
 
 Advanced Course Search Bar - A single course search bar with ElasticSearch for courses
 

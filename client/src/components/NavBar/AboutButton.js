@@ -83,13 +83,6 @@ class AboutButton extends PureComponent {
               <br />
               Planned Features:
               <br />
-              Course Highlighting - Hovering over a course requirement
-              highlights that course that satisfies it in your course plan.
-              <br />
-              Prerequisite/Corequisite Highlighting - Selecting an added course
-              will highlight added prerequisites/corequisites in your course
-              plan.
-              <br />
               Virtualize Requirements Lists - Improve the performance of
               requirements lists by virtualizing them.
               <br />
@@ -101,11 +94,6 @@ class AboutButton extends PureComponent {
               Requirement Colors - Color requirements or sections of
               requirements a certain color that also colors them in the course
               plan.
-              <br />
-              Manual Checking - Add an option to manually check a course
-              requirement if it was satisfied using AP/CC credit.
-              <br />
-              Export Plan - Export your course plan in .csv or .xlsx format.
               <br />
               Advanced Course Search Bar - A single course search bar with ElasticSearch for courses
               <br />
