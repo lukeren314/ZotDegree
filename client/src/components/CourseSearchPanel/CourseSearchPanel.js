@@ -36,7 +36,8 @@ class CourseSearchPanel extends PureComponent {
     this.doSearchCourse = () => {
       const { department, courseNumber, geCategories } = this.state;
       const { dispatch } = this.props;
-      if (department.value === "ALL" && geCategories.length === 0) {
+      const departmentValue = (department) ? department.value : "ALL";
+      if (departmentValue === "ALL" && geCategories.length === 0) {
         dispatch(openAlert("You must specify a department or GE Categories!"));
         return;
       }
@@ -45,10 +46,11 @@ class CourseSearchPanel extends PureComponent {
         dispatch(openAlert("Course number/range invalid!", "error"));
         return;
       }
+      const geCategoryValues = geCategories.map((ge) => ge.value);
       const query = {
-        department: department.value,
+        department:departmentValue,
         courseNumber,
-        geCategories,
+        geCategories: geCategoryValues,
       };
       dispatch(fetchSearchListIfNeeded(query));
     };
@@ -86,10 +88,7 @@ class CourseSearchPanel extends PureComponent {
         >
           Search
         </Button>
-        <CourseSearchList
-          searchList={searchList}
-          isLoading={isFetching}
-        />
+        <CourseSearchList searchList={searchList} isLoading={isFetching} />
       </div>
     );
   }

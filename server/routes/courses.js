@@ -51,9 +51,6 @@ router.get("/getCourse/:courseId", (req, res) => {
 });
 
 function queryCourses(department, courseNum, geCategories) {
-  if (!(department in departmentIndex)) {
-    return null;
-  }
   let courseIds = getCourseIds(department, geCategories);
   if (courseNum) {
     courseIds = getMatchedIds(courseIds, courseNum.toUpperCase());
