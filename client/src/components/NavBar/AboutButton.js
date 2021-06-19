@@ -81,10 +81,10 @@ class AboutButton extends PureComponent {
               check with your counselor before committing to a course plan!
               <br />
               <br />
-              Planned Features:
+              Planned Features: (Last Update 6/18/2021)
               <br />
               Virtualize Requirements Lists - Improve the performance of
-              requirements lists by virtualizing them.
+              requirements lists
               <br />
               Themes - Dark mode?
               <br />
@@ -95,7 +95,7 @@ class AboutButton extends PureComponent {
               requirements a certain color that also colors them in the course
               plan.
               <br />
-              Advanced Course Search Bar - A single course search bar with ElasticSearch for courses
+              Advanced Course Search Bar - A single course search bar that makes looking for classes easier
               <br />
               <br />
               Though I do not plan on open sourcing this project, I am open to
