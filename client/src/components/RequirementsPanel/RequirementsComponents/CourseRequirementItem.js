@@ -13,6 +13,7 @@ import {
   checkRequirement,
   fetchCourseIfNeeded,
   highlightCourse,
+  openAlert,
   unhighlightCourse,
   unloadCourse,
 } from "../../../actions";
@@ -21,6 +22,8 @@ import { REQUIREMENTS_PREFIX } from "../../CoursePlanner/dragLogic";
 function CourseRequirementItem(props) {
   const { requirement, loadedRequirements, checkedRequirements, dispatch } =
     props;
+    const requirementSatisfied = requirement.checked ||
+    checkedRequirements.includes(requirement.course);
   return (
     <Fragment>
       <ListItem
@@ -58,9 +61,13 @@ function CourseRequirementItem(props) {
             control={
               <Checkbox
                 checked={
-                  requirement.checked ||
-                  checkedRequirements.includes(requirement.course)
+                  requirementSatisfied
                 }
+                onClick={() => {
+                  if (!requirementSatisfied) {
+                      dispatch(openAlert("Add the Course to Satisfy the Requirement!"))
+                    }
+                }}
               />
             }
             label="Satisfied"
