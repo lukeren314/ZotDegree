@@ -41,7 +41,14 @@ async function jsonRequest(path, params) {
   try {
     const json = await fetch(setEndpointHost(path), params)
       .then((resp) => resp.json())
-      .catch(() => ({ error: "Request Error!" }));
+      .catch((error) => { 
+        console.log(error);
+        return {error: "Request Error!"};
+       });
+       if ("error" in json)
+       {
+         console.log(json.error);
+       }
     return json;
   } catch {}
   return { error: "Request Failed!" };
