@@ -28,7 +28,6 @@ router.post("/", (req, res) => {
 
 function getRequirements(degreeNames) {
   let requirements = [
-    { name: "College Requirements", requirementsLists: [universalRequirements] },
   ];
   if (degreeNames.length > MAX_DEGREES) {
     return requirements;
