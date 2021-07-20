@@ -36,14 +36,7 @@ export const onDragEnd = (
   const isRemove = (destination) =>
     destination.droppableId === COURSE_SEARCH_ID;
 
-  const findCourse = (courseId) => {
-    for (let i = 0; i < coursePlan.length; ++i) {
-      if (coursePlan[i].content.id === courseId) {
-        return i;
-      }
-    }
-    return -1;
-  };
+  const duplicateCourse = (course) => ({...course, id: idCounter.getNextId()});
 
   const copyTo = (destination, newCourse) => {
     let [year, quarter] = getYearQuarter(destination.droppableId);
@@ -56,10 +49,6 @@ export const onDragEnd = (
   };
 
   const maybeAddCourse = (destination, course) => {
-    if (findCourse(course.content.id, coursePlan) !== -1) {
-      openAlert("This class was already added!", "error");
-      return coursePlan;
-    }
     const newCoursePlan = copyTo(destination, course);
     if (newCoursePlan.length > MAX_COURSE_LIMIT) {
       openAlert(`Max course limit: ${MAX_COURSE_LIMIT}`, "error");
@@ -70,17 +59,14 @@ export const onDragEnd = (
 
   const maybeAddRequirement = (source, destination) => {
     const requirementId = getRequirementId(source.droppableId);
-    const newCourse = loadedRequirements[requirementId];
+    const newCourse = duplicateCourse(loadedRequirements[requirementId]);
     return maybeAddCourse(destination, newCourse);
   };
 
   const getRequirementId = (droppableId) => droppableId.substr(REQUIREMENTS_PREFIX.length);
 
   const maybeAddCourseCopy = (source, destination) => {
-    const newCourse = {
-      ...searchList[source.index],
-      id: idCounter.getNextId(),
-    };
+    const newCourse = duplicateCourse(searchList[source.index]);
     return maybeAddCourse(destination, newCourse);
   };
 

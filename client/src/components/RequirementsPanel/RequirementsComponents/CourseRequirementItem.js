@@ -40,7 +40,7 @@ function CourseRequirementItem(props) {
           requirement.checked && dispatch(unhighlightCourse(requirement.course))
         }
       >
-        {requirement.checked || !(requirement.id in loadedRequirements) ? (
+        {!(requirement.id in loadedRequirements) ? (
           <Tooltip title={requirement.checked ? "" : "Click me to add class"}>
             <ListItemText
               primary={requirement.course}
