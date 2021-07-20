@@ -3,6 +3,7 @@
 by Luke Ren
 
 Plan out your years at UCI with ease using ZotDegree!
+https://zotdegree.herokuapp.com/
 
 ## Planned Features
 
