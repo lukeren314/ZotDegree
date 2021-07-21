@@ -6,8 +6,8 @@ function HeaderRequirement(props) {
   return (
     <Fragment>
       <Divider />
-      <ListItem dense={true} button>
-        <ListItemText primary={requirement.comment} primaryTypographyProps={{variant: "h5"}}/>
+      <ListItem dense={true}>
+        <ListItemText primary={requirement.comment} primaryTypographyProps={{variant: "body1"}}/>
       </ListItem>
       <Divider />
     </Fragment>

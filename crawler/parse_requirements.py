@@ -149,6 +149,10 @@ def pick_header_text(potential_headers, toggleheads, i):
 
 
 def parse_requirements_table(courselist_table):
+    # utility functions
+    def is_bullet_point(text):
+        return len(text) > 2 and text[0].isalpha() and text[0].isupper() and text[1] == "." and text[2] == " "
+        
     course_tr = courselist_table.find_all("tr")
     requirements = []
     next_or = False
@@ -177,11 +181,19 @@ def parse_requirements_table(courselist_table):
                 # otherwise, be prepared to combine the next series/single with the previous
                 next_or = True
                 continue
-            # if it's not an or commment, add it as a comment
+            # if it's not an or comment, add it as a comment
+            comment_text = get_clean_text(search_comment.text)
+            if is_bullet_point(comment_text):
+                requirements.append({
+                    "type": "header",
+                    "comment": comment_text
+                })
+                continue
             requirements.append({
                 "type": "comment",
                 "comment": get_clean_text(search_comment.text),
             })
+            
             continue
 
         total_text = course.get_text().strip()
