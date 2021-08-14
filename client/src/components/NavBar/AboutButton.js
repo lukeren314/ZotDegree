@@ -81,23 +81,6 @@ class AboutButton extends PureComponent {
               check with your counselor before committing to a course plan!
               <br />
               <br />
-              Planned Features: (Last Update 6/18/2021)
-              <br />
-              Virtualize Requirements Lists - Improve the performance of
-              requirements lists
-              <br />
-              Themes - Dark mode?
-              <br />
-              Course Offering Detector - Detect if the course is planning to be
-              offered that quarter and that year.
-              <br />
-              Requirement Colors - Color requirements or sections of
-              requirements a certain color that also colors them in the course
-              plan.
-              <br />
-              Advanced Course Search Bar - A single course search bar that makes looking for classes easier
-              <br />
-              <br />
               Though I do not plan on open sourcing this project, I am open to
               pull requests. The (messy) code is publicly available at:{" "}
               <Link href="https://github.com/lukeren314/ZotDegree">

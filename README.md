@@ -20,6 +20,10 @@ plan.
 
 Advanced Course Search Bar - A single course search bar with ElasticSearch for courses
 
+GE Requirements Checker - Sees how many GE requirements you have fulfilled and still need to fulfill
+
+
+
 ## Run Locally
 
 WIP
