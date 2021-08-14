@@ -1,5 +1,8 @@
+const apiGetCourse = require("../api/api")
 const express = require("express");
 const router = express.Router();
+
+const USE_PETER_PORTAL = false;
 
 console.log("Setting up course indexes");
 const departmentIndex = toIndex(
@@ -16,13 +19,13 @@ function toIndex(data) {
   return index;
 }
 
-router.post("/search", (req, res) => {
+router.post("/search", async (req, res) => {
   try {
     const { department, courseNumber, geCategories } = req.body;
     if (department === "ALL" && geCategories === []) {
       res.status(400).json({ error: "Missing Department/GECategory" });
     }
-    const queriedCourses = queryCourses(department, courseNumber, geCategories);
+    const queriedCourses = await queryCourses(department, courseNumber, geCategories);
     if (queriedCourses === null) {
       res.status(500).json({
         error: `Courses for Dept. ${department} and GEs ${geCategories.join(',')} not found`,
@@ -35,9 +38,9 @@ router.post("/search", (req, res) => {
   }
 });
 
-router.get("/getCourse/:courseId", (req, res) => {
+router.get("/getCourse/:courseId", async (req, res) => {
   try {
-    const course = getCourse(req.params.courseId);
+    const course = await getCourse(req.params.courseId);
     if (course === null) {
       res.status(500).json({
         error: `Course with id ${courseId} not found`,
@@ -50,12 +53,12 @@ router.get("/getCourse/:courseId", (req, res) => {
   }
 });
 
-function queryCourses(department, courseNum, geCategories) {
+async function queryCourses(department, courseNum, geCategories) {
   let courseIds = getCourseIds(department, geCategories);
   if (courseNum) {
     courseIds = getMatchedIds(courseIds, courseNum.toUpperCase());
   }
-  let courses = getCourses(courseIds);
+  let courses = await getCourses(courseIds);
   return courses;
 }
 
@@ -125,17 +128,24 @@ function getCourseNumber(courseId) {
   return tokens[tokens.length - 1];
 }
 
-function getCourses(courseIds) {
+async function getCourses(courseIds) {
   let courses = [];
   for (let courseId of courseIds) {
     if (courseId in coursesIndex) {
-      courses.push(getCourse(courseId));
+      const course = await getCourse(courseId);
+      if (course && course !== null) {
+        courses.push(course);
+      }
+      
     }
   }
   return courses;
 }
 
-function getCourse(courseId) {
+async function getCourse(courseId) {
+  if (USE_PETER_PORTAL) {
+    return await apiGetCourse(courseId);
+  }
   return coursesIndex[courseId];
 }
 

@@ -17,8 +17,8 @@ function Row(props) {
     <Fragment>
       <TableRow>
         <TableCell scope="row">{courseDraggable}</TableCell>
-        <TableCell>{course.name}</TableCell>
-        <TableCell>{course.ge_categories.join(", ") || "N/A"}</TableCell>
+        <TableCell>{course.title}</TableCell>
+        <TableCell>{course.ge_list.join(", ") || "N/A"}</TableCell>
         <TableCell align="right">{getUnitsStr(course.units)}</TableCell>
       </TableRow>
     </Fragment>

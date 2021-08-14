@@ -1,74 +1,70 @@
+from typing import List
+from bs4 import BeautifulSoup, element
+from soupcache import SoupCache
 
+from class_defs import *
 from util.soups import get_clean_text
 
 id_counter = 0
 
 
-def parse_universal_requirements():
+class RequirementIdCounter:
+    id_counter = 0
+
+    def get_id():
+        id = RequirementIdCounter.id_counter
+        RequirementIdCounter.id_counter += 1
+        return id
+
+
+def parse_universal_requirements() -> None:
     # hard coded for now
-    requirements = {
-        "header": "University Requirements",
-        "requirements": [
-            {
-                "type": "comment",
-                "comment": "Units: 180"
-            },
-            {
-                "type": "section",
-                "comment": "General Education Requirements",
-                "subrequirements": [
-                    {
-                        "type": "comment",
-                        "comment": "I. Writing (two lower-division plus one upper-division course)"
-                    },
-                    {
-                        "type": "comment",
-                        "comment": "II. Science and Technology (three courses)"
-                    },
-                    {
-                        "type": "comment",
-                        "comment": "III. Social and Behavioral Sciences (three courses)"
-                    },
-                    {
-                        "type": "comment",
-                        "comment": "IV. Arts and Humanities (three courses)"
-                    },
-                    {
-                        "type": "comment",
-                        "comment": "V. Quantitative, Symbolic, and Computational Reasoning, with subcategories Va and Vb (three courses that may also satisfy another GE category)"
-                    },
-                    {
-                        "type": "comment",
-                        "comment": "VI. Language Other Than English (one course)"
-                    },
-                    {
-                        "type": "comment",
-                        "comment": "VII. Multicultural Studies (one course that may also satisfy another GE category)"
-                    },
-                    {
-                        "type": "comment",
-                        "comment": "VIII. International/Global Issues (one course that may also satisfy another GE category)"
-                    }
-                ]
-            }
-        ]
-    }
-    requirements["requirements"] = assign_requirements_ids(requirements["requirements"])
-    return requirements
+    requirement_list = RequirementList("University Requirements",
+                                       [
+                                           CommentRequirementItem(
+                                               "Units: 180"),
+                                           SectionRequirementItem("General Education Requirements",
+                                                                  [
+                                                                      CommentRequirementItem(
+                                                                          "I. Writing (two lower-division plus one upper-division course)"),
+                                                                      CommentRequirementItem(
+                                                                          "II. Science and Technology (three courses)"),
+                                                                      CommentRequirementItem(
+                                                                          "III. Social and Behavioral Sciences (three courses)"),
+                                                                      CommentRequirementItem(
+                                                                          "IV. Arts and Humanities (three courses)"),
+                                                                      CommentRequirementItem(
+                                                                          "V. Quantitative, Symbolic, and Computational Reasoning, with subcategories Va and Vb (three courses that may also satisfy another GE category)"),
+                                                                      CommentRequirementItem(
+                                                                          "VI. Language Other Than English (one course)"),
+                                                                      CommentRequirementItem(
+                                                                          "VII. Multicultural Studies (one course that may also satisfy another GE category)"),
+                                                                      CommentRequirementItem(
+                                                                          "VIII. International/Global Issues (one course that may also satisfy another GE category)"),
+                                                                  ])
+                                       ]
+                                       )
+    universal_requirements = DegreeRequirements([
+        requirement_list
+    ])
+    assign_requirement_list_ids(requirement_list)
+    return universal_requirements
 
 
-def parse_requirements(soup):
-    reqstextcontainer = soup.find(id="requirementstextcontainer")
-    if not reqstextcontainer:
-        reqstextcontainer = soup.find(id="schoolrequirementstextcontainer")
-    if not reqstextcontainer:
-        return []
-    requirements = parse_requirements_text_container(reqstextcontainer)
-    return requirements
+def parse_requirements(soup: BeautifulSoup) -> DegreeRequirements:
+    requirements_text_container = soup.find(id="requirementstextcontainer")
+    if not requirements_text_container:
+        requirements_text_container = soup.find(
+            id="schoolrequirementstextcontainer")
+    if not requirements_text_container:
+        return DegreeRequirements([])
+    degree_requirements = parse_requirements_text_container(
+        requirements_text_container)
+    return degree_requirements
 
 
-def parse_requirements_text_container(requirements_text_container):
-    all_requirements = []
+def parse_requirements_text_container(requirements_text_container: element.Tag) -> DegreeRequirements:
+    requirement_lists = []
     toggleheads = requirements_text_container.find_all(class_="tglhead")
     course_lists = requirements_text_container.find_all(class_="sc_courselist")
     for i, course_list in enumerate(course_lists):
@@ -77,17 +73,15 @@ def parse_requirements_text_container(requirements_text_container):
         header_clean_text = get_clean_text(header_text)
         if header_clean_text[-1] == "1":  # footnote number, get rid of it
             header_clean_text = header_clean_text[:-1]
-        if header_clean_text in all_requirements:
+        if any((requirement_list.header == header_clean_text for requirement_list in requirement_lists)):
             continue
         requirements = parse_requirements_table(course_list)
-        all_requirements.append({
-            "header": header_clean_text,
-            "requirements": requirements
-        })
-    return all_requirements
+        requirement_lists.append(RequirementList(
+            header_clean_text, requirements))
+    return DegreeRequirements(requirement_lists)
 
 
-def get_potential_headers(course_list):
+def get_potential_headers(course_list: element.Tag) -> List[str]:
     potential_headers = []
     potential_header = course_list.previous_sibling
     if not potential_header.previous_sibling:
@@ -117,7 +111,7 @@ def get_potential_headers(course_list):
     return potential_headers
 
 
-def pick_header_text(potential_headers, toggleheads, i):
+def pick_header_text(potential_headers: List[str], toggleheads: element.ResultSet, i: int) -> str:
     header = None
     for potential_header in potential_headers:
         if potential_header.name in ("h4", "h5"):
@@ -148,11 +142,11 @@ def pick_header_text(potential_headers, toggleheads, i):
     return header_text
 
 
-def parse_requirements_table(courselist_table):
+def parse_requirements_table(courselist_table: element.Tag) -> RequirementList:
     # utility functions
     def is_bullet_point(text):
         return len(text) > 2 and text[0].isalpha() and text[0].isupper() and text[1] == "." and text[2] == " "
-        
+
     course_tr = courselist_table.find_all("tr")
     requirements = []
     next_or = False
@@ -160,11 +154,9 @@ def parse_requirements_table(courselist_table):
         class_ = course.get("class")
         # handler headers
         if "areaheader" in class_:
-            requirements.append({
-                "type": "header",
-                "comment": get_clean_text(
-                    course.find(class_="courselistcomment").text),
-            })
+            text = get_clean_text(
+                course.find(class_="courselistcomment").text)
+            requirements.append(HeaderRequirementItem(text))
             continue
         # if the current row's a comment
         search_comment = course.find(class_="courselistcomment")
@@ -172,11 +164,8 @@ def parse_requirements_table(courselist_table):
             # if it's an or comment
             if "or" == search_comment.text.strip():
                 # if the previous row was a comment/header, we treat this or as a comment too
-                if len(requirements) > 0 and requirements[-1]["type"] in ("header", "comment"):
-                    requirements.append({
-                        "type": "comment",
-                        "comment": "or",
-                    })
+                if len(requirements) > 0 and requirements[-1].type in ("header", "comment"):
+                    requirements.append(CommentRequirementItem("or"))
                     continue
                 # otherwise, be prepared to combine the next series/single with the previous
                 next_or = True
@@ -184,16 +173,10 @@ def parse_requirements_table(courselist_table):
             # if it's not an or comment, add it as a comment
             comment_text = get_clean_text(search_comment.text)
             if is_bullet_point(comment_text):
-                requirements.append({
-                    "type": "header",
-                    "comment": comment_text
-                })
+                requirements.append(HeaderRequirementItem(comment_text))
                 continue
-            requirements.append({
-                "type": "comment",
-                "comment": get_clean_text(search_comment.text),
-            })
-            
+            requirements.append(CommentRequirementItem(
+                get_clean_text(search_comment.text)))
             continue
 
         total_text = course.get_text().strip()
@@ -208,10 +191,6 @@ def parse_requirements_table(courselist_table):
             course_id = course_id[len("or "):]
         # if -, it's a series
         if "-" in course_id:
-            course_requirement = {
-                "type": "series",
-                "subrequirements": []
-            }
             course_ids = [c_id.strip()
                           for c_id in course_id.split("-")]
             base_course_id = course_ids[0]
@@ -222,55 +201,43 @@ def parse_requirements_table(courselist_table):
             for i, course_id in enumerate(course_ids):
                 if i > 0 and not course_id.startswith(course_department):
                     course_ids[i] = course_department.upper()+" "+course_id
-            course_requirement["subrequirements"] = [
-                {"type": "single", "course": course_id} for course_id in course_ids]
+            course_requirement = SeriesRequirementItem(
+                [CourseRequirementItem(course_id) for course_id in course_ids])
         else:
             # handle the single course case
-            course_requirement = {
-                "type": "single",
-                "course": course_id
-            }
+            course_requirement = CourseRequirementItem(course_id)
         # if we previously encountered an or
         if len(requirements) > 0 and ("orclass" in class_ or next_or):
             # see if we have multiple ors, if so, just merge into the previous one
-            if requirements[-1]["type"] != "or":
-                requirements[-1] = {
-                    "type": "or",
-                    "subrequirements": [requirements[-1]]
-                }
+            if requirements[-1].type != "or":
+                requirements[-1] = OrRequirementItem([requirements[-1]])
             # add the course to the ors
-            requirements[-1]["subrequirements"].append(course_requirement)
+            requirements[-1].subrequirements.append(course_requirement)
             next_or = False
             continue
         requirements.append(course_requirement)
     requirements = nest_requirements_under_headers(requirements)
-    requirements = assign_requirements_ids(requirements)
+    assign_requirements_ids(requirements)
     return requirements
 
 
-def nest_requirements_under_headers(requirements):
+def nest_requirements_under_headers(requirements: List[RequirementItem]) -> List[RequirementItem]:
     new_requirements = []
     header = None
     current_requirements = []
 
     def get_next_header():
         if len(current_requirements) == 0:
-            return {
-                "type": "header",
-                "comment": header,
-            }
-        return {
-            "type": "section",
-            "comment": header,
-            "subrequirements": current_requirements
-        }
+            return HeaderRequirementItem(header)
+        return SectionRequirementItem(header, current_requirements)
+
     for requirement in requirements:
-        if requirement["type"] == "header":
+        if type(requirement) == HeaderRequirementItem:
             if header is None:
-                header = requirement["comment"]
+                header = requirement.text
             else:
                 new_requirements.append(get_next_header())
-                header = requirement["comment"]
+                header = requirement.text
                 current_requirements = []
         else:
             current_requirements.append(requirement)
@@ -283,42 +250,42 @@ def nest_requirements_under_headers(requirements):
     return new_requirements
 
 
-def assign_requirements_ids(requirements):
-    global id_counter
+def assign_requirement_list_ids(requirement_lists: RequirementList) -> None:
+    return assign_requirements_ids(requirement_lists.requirements)
+
+
+def assign_requirements_ids(requirements: List[RequirementItem]) -> None:
     for i in range(len(requirements)):
-        requirements[i]["id"] = id_counter
-        id_counter += 1
-        if "subrequirements" in requirements[i]:
-            requirements[i]["subrequirements"] = assign_requirements_ids(
-                requirements[i]["subrequirements"])
-    return requirements
+        requirements[i].set_id(RequirementIdCounter.get_id())
+        if type(requirements[i]) in (OrRequirementItem, SeriesRequirementItem, SectionRequirementItem):
+            assign_requirements_ids(requirements[i].subrequirements)
 
 
-def test_requirements_computer_science(soup_cache):
+def test_requirements_computer_science(soup_cache: SoupCache) -> None:
     soup = soup_cache.get_soup(
         "http://catalogue.uci.edu/donaldbrenschoolofinformationandcomputersciences/departmentofcomputerscience/computerscience_bs/#requirementstext")
     requirements = parse_requirements(soup)
 
 
-def test_requirements_spanish_minor(soup_cache):
+def test_requirements_spanish_minor(soup_cache: SoupCache) -> None:
     soup = soup_cache.get_soup(
         "http://catalogue.uci.edu/schoolofhumanities/departmentofspanishandportuguese/spanish_minor/#requirementstext")
     requirements = parse_requirements(soup)
 
 
-def test_requirements_japanese_studies_minor(soup_cache):
+def test_requirements_japanese_studies_minor(soup_cache: SoupCache) -> None:
     soup = soup_cache.get_soup(
         "http://catalogue.uci.edu/schoolofhumanities/departmentofeastasianstudies/japanesestudies_minor/#requirementstext")
     requirements = parse_requirements(soup)
 
 
-def test_requirements_applied_physics(soup_cache):
+def test_requirements_applied_physics(soup_cache: SoupCache) -> None:
     soup = soup_cache.get_soup(
         "http://catalogue.uci.edu/schoolofphysicalsciences/departmentofphysicsandastronomy/appliedphysics_bs/#requirementstext")
     requirements = parse_requirements(soup)
 
 
-def test_requirements_biosci_school(soup_cache):
+def test_requirements_biosci_school(soup_cache: SoupCache) -> None:
     soup = soup_cache.get_soup(
         "http://catalogue.uci.edu/schoolofbiologicalsciences/#schoolrequirementstext")
     requirements = parse_requirements(soup)

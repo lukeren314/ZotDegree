@@ -23,12 +23,12 @@ function CoursePopover(props) {
     >
       <div className={classes.courseInfo}>
         <Typography variant="subtitle1">
-          {course.id}. {course.name}. {getUnitsStr(course.units)} Unit(s).
+          {course.id}. {course.title}. {getUnitsStr(course.units)} Unit(s).
         </Typography>
         <Typography variant="subtitle2"></Typography>
         <Typography variant="caption">{course.description}</Typography>
         <Typography variant="subtitle2">
-          {course.prerequisite && "Prerequisites: " + course.prerequisite}
+          {course.prerequisite_text && "Prerequisites: " + course.prerequisite_text}
         </Typography>
         <Typography variant="subtitle2">
           {course.corequisite && "Corequisites: " + course.corequisite}
@@ -37,8 +37,8 @@ function CoursePopover(props) {
           {course.same_as && "Same as: " + course.same_as}
         </Typography>
         <Typography variant="subtitle2">
-          {course.ge_categories.length > 0 &&
-            "GE Categories: " + course.ge_categories.join(", ")}
+          {course.ge_list.length > 0 &&
+            "GE Categories: " + course.ge_list.join(", ")}
         </Typography>
       </div>
     </Popover>

@@ -1,4 +1,8 @@
+from typing import Tuple, Dict, Union, List
+from soupcache import SoupCache
+from bs4 import BeautifulSoup, element
 
+from class_defs import Course, CourseDepartment
 from util.logger import log_debug
 from util.soups import get_clean_text, get_header_text, get_urls
 import re
@@ -6,7 +10,7 @@ import re
 COURSES_URL = "http://catalogue.uci.edu/allcourses/"
 
 
-def scrape_course_departments(soup_cache):
+def scrape_course_departments(soup_cache: SoupCache) -> Tuple[Dict[str, CourseDepartment], Dict[str, Course]]:
     course_departments = {}
     courses = {}
     soup = soup_cache.get_soup(COURSES_URL)
@@ -17,54 +21,54 @@ def scrape_course_departments(soup_cache):
         for url in urls:
             course_department, department_courses = scrape_course_department(soup_cache,
                                                                              url)
-            course_departments[course_department["name"]] = course_department
+            course_departments[course_department.name] = course_department
             courses.update(department_courses)
 
     return course_departments, courses
 
 
-def scrape_course_department(soup_cache, url):
+def scrape_course_department(soup_cache: SoupCache, url: str) -> Tuple[Dict[str, CourseDepartment], Dict[str, Course]]:
     soup = soup_cache.get_soup(url)
     course_department = parse_course_department(soup)
     courses = parse_courses(soup)
 
     # add courses to departments
-    course_department["courses"] = []
+    course_ids = []
     for course in courses.values():
-        course_department["courses"].append(course["id"])
+        course_ids.append(course.id)
+    course_department.set_course_ids(course_ids)
 
     return course_department, courses
 
 
-def parse_course_department(soup):
+def parse_course_department(soup: BeautifulSoup) -> CourseDepartment:
     header = get_header_text(soup)
     name = header[header.find("("):]
     title = header[:-len(name)].rstrip()
     name = name[1:-1]
     log_debug(header)
-    return {
-        "title": title,
-        "name": name
-    }
+    return CourseDepartment(title, name)
 
 
-def parse_courses(soup):
+def parse_courses(soup: BeautifulSoup) -> CourseDepartment:
     courses = {}
     base_div = soup.find(id="courseinventorycontainer")
     course_divs = base_div.find_all(class_="courseblock")
     for course_div in course_divs:
         course = parse_course_div(course_div)
-        courses[course["id"]] = course
+        courses[course.id] = course
     return courses
 
 
-def parse_course_div(course_div):
+def parse_course_div(course_div: element.Tag) -> Course:
     title_div = course_div.find(class_="courseblocktitle")
     title = get_clean_text(title_div.text)
 
-    course = parse_course_title(title)
-    info = parse_course_info(course_div)
-    return {**course, **info}
+    course_info = parse_course_title(title)
+    course = Course(**course_info)
+    course_data = parse_course_info(course_div)
+    course.set_course_data(**course_data)
+    return course
 
 
 course_title_re = re.compile(
@@ -73,7 +77,7 @@ course_title_no_units = re.compile(
     r'([A-Z0-9&\/ ]+) ([0-9A-Z]+)\.  ?([A-Za-z0-9.() —–\-\/:,&?\'+’]+)\.')
 
 
-def parse_course_title(title):
+def parse_course_title(title: str) -> Dict[str, Union[int, str]]:
     title = get_clean_text(title)
 
     if "Unit" in title:
@@ -99,7 +103,7 @@ def parse_course_title(title):
     }
 
 
-def parse_course_info(course_div):
+def parse_course_info(course_div: element.Tag) -> Dict[str, str]:
     desc = course_div.find("div", class_="courseblockdesc")
     prerequisite = ""
     corequisite = ""
@@ -137,22 +141,24 @@ def parse_course_info(course_div):
                     ge_categories.append(token)
     return {
         "description": desc,
-        "prerequisite": prerequisite,
+        "prerequisite_text": prerequisite,
         "corequisite": corequisite,
         "prerequisite_list": prerequisite_list,
         "same_as": same_as,
-        "ge_categories": ge_categories
+        "ge_list": ge_categories
     }
 
 
-def get_prerequisite_list(line):
+def get_prerequisite_list(line: str) -> List[str]:
     courses = line.split(".")[0].strip()
     tree = parse_tree(courses)
     return tree
 
+
 bad_chars = set("abcdefghijklmnopqrstuvwxyz.")
 
-def parse_tree(tree_str):
+
+def parse_tree(tree_str: str) -> List[str]:
     parts = []
     i = 0
     while True:
@@ -188,7 +194,8 @@ def parse_tree(tree_str):
         i = next_index
     return parts
 
-def get_next_index(tree_str, i):
+
+def get_next_index(tree_str: List[str], i: int) -> int:
     nextor = tree_str.find("or ", i)
     nextand = tree_str.find("and ", i)
     found = [i for i in (nextor, nextand) if i >= 0]
@@ -197,11 +204,12 @@ def get_next_index(tree_str, i):
     nextIndex = min(found)
     return nextIndex
 
-def test_scrape_courses(soup_cache):
+
+def test_scrape_courses(soup_cache: SoupCache):
     scrape_course_departments(soup_cache)
 
 
-def test_bana(soup_cache):
+def test_bana(soup_cache: SoupCache):
     scrape_course_department(
         soup_cache, "http://catalogue.uci.edu/allcourses/bana/")
 
