@@ -1,3 +1,4 @@
+from class_defs import DegreeRequirements
 from typing import Dict
 from bs4 import BeautifulSoup
 from soupcache import SoupCache
@@ -29,5 +30,6 @@ def scrape_school(soup_cache: SoupCache, school_url: str) -> School:
 
 def parse_school(soup: BeautifulSoup) -> School:
     header = get_header_text(soup)
-    requirements = parse_requirements(soup)
+    requirement_lists = parse_requirements(soup)
+    requirements = DegreeRequirements(header, requirement_lists)
     return School(header, requirements)

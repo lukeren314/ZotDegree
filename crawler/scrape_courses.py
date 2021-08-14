@@ -143,8 +143,8 @@ def parse_course_info(course_div: element.Tag) -> Dict[str, str]:
         "description": desc,
         "prerequisite_text": prerequisite,
         "corequisite": corequisite,
-        "prerequisite_list": prerequisite_list,
         "same_as": same_as,
+        "prerequisite_list": prerequisite_list,
         "ge_list": ge_categories
     }
 

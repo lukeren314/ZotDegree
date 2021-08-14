@@ -1,4 +1,7 @@
 
+# vs code config
+.vscode
+
 # environemnt variables
 .env
 
@@ -10,6 +13,3 @@ datasets
 
 # key file
 *.pem
-
-# bat files
-connectMDB.bat

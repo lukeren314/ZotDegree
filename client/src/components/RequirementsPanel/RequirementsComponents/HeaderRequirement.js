@@ -7,7 +7,7 @@ function HeaderRequirement(props) {
     <Fragment>
       <Divider />
       <ListItem dense={true}>
-        <ListItemText primary={requirement.comment} primaryTypographyProps={{variant: "body1"}}/>
+        <ListItemText primary={requirement.text} primaryTypographyProps={{variant: "body1"}}/>
       </ListItem>
       <Divider />
     </Fragment>

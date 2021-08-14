@@ -29,6 +29,9 @@ router.post("/", (req, res) => {
 function getRequirements(degreeNames) {
   let requirements = [
   ];
+  
+  requirements.push(universalRequirements);
+
   if (degreeNames.length > MAX_DEGREES) {
     return requirements;
   }
@@ -38,10 +41,7 @@ function getRequirements(degreeNames) {
       continue;
     }
     const degree = degrees[degreeName];
-    requirements.push({
-      name: degree.name,
-      requirementsLists: degree.requirements,
-    });
+    requirements.push(degree.requirements);
     if (
       degree.school in schools &&
       schools[degree.school].requirements.length > 0 &&
@@ -51,10 +51,8 @@ function getRequirements(degreeNames) {
     }
   }
   for (let schoolName of schoolNames) {
-    requirements.push({
-      name: schoolName,
-      requirementsLists: schools[schoolName].requirements,
-    });
+    const school = schools[schoolName];
+    requirements.push(school.requirements);
   }
   return requirements;
 }

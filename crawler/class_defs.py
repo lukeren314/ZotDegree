@@ -34,8 +34,10 @@ class Course(JSONSerializable):
             "name": self.name,
             "units": self.units,
             "description": self.description,
-            "same_as": self.same_as,
             "prerequisite_text": self.prerequisite_text,
+            "corequisite": self.corequisite,
+            "same_as": self.same_as,
+            "prerequisite_list": self.prerequisite_list,
             "ge_list": self.ge_list
         }
 
@@ -108,6 +110,22 @@ class HeaderRequirementItem(RequirementItem):
         }
 
 
+class GERequirementItem(RequirementItem):
+    def __init__(self, text: str, ge_category: str, count: int):
+        super().__init__("ge")
+        self.text = text
+        self.ge_category = ge_category
+        self.count = count
+
+    def to_json(self):
+        return {
+            "text": self.text,
+            "ge_category": self.ge_category,
+            "count": self.count,
+            **super().to_json()
+        }
+
+
 class OrRequirementItem(RequirementItem):
     def __init__(self, subrequirements: List[RequirementItem]):
         super().__init__("or")
@@ -171,11 +189,13 @@ class RequirementList(JSONSerializable):
 
 
 class DegreeRequirements(JSONSerializable):
-    def __init__(self, requirement_lists: List[RequirementList]):
+    def __init__(self, header: str, requirement_lists: List[RequirementList]):
+        self.header = header
         self.requirement_lists = requirement_lists
 
     def to_json(self):
         return {
+            "header": self.header,
             "requirement_lists": [requirement_list.to_json() for requirement_list in self.requirement_lists]
         }
 

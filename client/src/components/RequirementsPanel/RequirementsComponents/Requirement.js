@@ -5,6 +5,7 @@ import OrRequirement from "./OrRequirement";
 import CourseRequirement from "./CourseRequirement";
 import SectionRequirement from "./SectionRequirement";
 import SeriesRequirement from "./SeriesRequirement";
+import GERequirement from "./GERequirement";
 
 function Requirement(props) {
   const { requirement } = props;
@@ -21,6 +22,8 @@ function Requirement(props) {
     RequirementType = OrRequirement;
   } else if (requirement.type === "section") {
     RequirementType = SectionRequirement;
+  } else if (requirement.type === "ge") {
+    RequirementType = GERequirement;
   }
   return (
     <Fragment>

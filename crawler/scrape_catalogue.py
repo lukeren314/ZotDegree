@@ -104,7 +104,8 @@ def create_ge_index(courses: Dict[str, Course]):
 
 def scrape_and_save_universal_requirements(data_path: str):
     universal_requirements = parse_universal_requirements()
-    save_data(data_path, UNIVERSAL_REQUIREMENTS_DATA_PATH, universal_requirements)
+    save_data(data_path, UNIVERSAL_REQUIREMENTS_DATA_PATH,
+              universal_requirements)
 
 
 def scrape_and_save_degrees(soup_cache: SoupCache, data_path: str):

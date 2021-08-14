@@ -29,7 +29,7 @@ class SectionRequirement extends PureComponent {
       <Fragment>
         <Divider />
         <ListItem button onClick={() => this.setIsOpen(!isOpen)}>
-          <ListItemText primary={requirement.comment} />
+          <ListItemText primary={requirement.text} />
           {isOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
@@ -37,7 +37,7 @@ class SectionRequirement extends PureComponent {
             {requirement.subrequirements.map((subrequirement, index) => {
               return (
                 <Requirement
-                  key={requirement.comment + index}
+                  key={requirement.text + index}
                   requirement={subrequirement}
                 />
               );

@@ -5,7 +5,7 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import { PureComponent } from "react";
 
-class RequirementsList extends PureComponent {
+class RequirementList extends PureComponent {
   constructor(props) {
     super(props);
     this.setIsOpen = (isOpen) => {
@@ -16,23 +16,23 @@ class RequirementsList extends PureComponent {
     };
   }
   render() {
-    const { requirementsList, requirementsName } = this.props;
+    const { requirementList, parentRequirementHeader } = this.props;
     const { isOpen } = this.state;
     return (
       <Fragment>
         <ListItem button onClick={() => this.setState({isOpen:!isOpen})}>
           <ListItemText
-            primary={requirementsList.header}
-            secondary={requirementsName}
+            primary={requirementList.header}
+            secondary={parentRequirementHeader}
           />
           {isOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
           <List>
-            {requirementsList.requirements.map((requirement, index) => {
+            {requirementList.requirements.map((requirement, index) => {
               return (
                 <Requirement
-                  key={requirementsList.header + index}
+                  key={requirementList.header + index}
                   requirement={requirement}
                 />
               );
@@ -44,4 +44,4 @@ class RequirementsList extends PureComponent {
   }
 }
 
-export default RequirementsList;
+export default RequirementList;

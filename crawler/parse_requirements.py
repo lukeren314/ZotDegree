@@ -17,53 +17,54 @@ class RequirementIdCounter:
         return id
 
 
-def parse_universal_requirements() -> None:
+def parse_universal_requirements() -> DegreeRequirements:
     # hard coded for now
-    requirement_list = RequirementList("University Requirements",
+    requirement_list = RequirementList("General Education Requirements",
                                        [
-                                           CommentRequirementItem(
-                                               "Units: 180"),
-                                           SectionRequirementItem("General Education Requirements",
-                                                                  [
-                                                                      CommentRequirementItem(
-                                                                          "I. Writing (two lower-division plus one upper-division course)"),
-                                                                      CommentRequirementItem(
-                                                                          "II. Science and Technology (three courses)"),
-                                                                      CommentRequirementItem(
-                                                                          "III. Social and Behavioral Sciences (three courses)"),
-                                                                      CommentRequirementItem(
-                                                                          "IV. Arts and Humanities (three courses)"),
-                                                                      CommentRequirementItem(
-                                                                          "V. Quantitative, Symbolic, and Computational Reasoning, with subcategories Va and Vb (three courses that may also satisfy another GE category)"),
-                                                                      CommentRequirementItem(
-                                                                          "VI. Language Other Than English (one course)"),
-                                                                      CommentRequirementItem(
-                                                                          "VII. Multicultural Studies (one course that may also satisfy another GE category)"),
-                                                                      CommentRequirementItem(
-                                                                          "VIII. International/Global Issues (one course that may also satisfy another GE category)"),
-                                                                  ])
+                                           GERequirementItem(
+                                               "Ia. Writing (two lower-division)", "Ia", 2),
+                                           GERequirementItem(
+                                               "Ib. Writing (one upper-division course)", "Ib", 1),
+                                           GERequirementItem(
+                                               "II. Science and Technology (three courses)", "II", 3),
+                                           GERequirementItem(
+                                               "III. Social and Behavioral Sciences (three courses)", "III", 3),
+                                           GERequirementItem(
+                                               "IV. Arts and Humanities (three courses)", "IV", 3),
+                                           GERequirementItem(
+                                               "V. Quantitative, Symbolic, and Computational Reasoning (three courses that may also satisfy another GE category)", "V", 3),
+                                           GERequirementItem(
+                                               "Va. Quantitative Literacy (one course)", "Va", 1),
+                                           GERequirementItem(
+                                               "Vb. Formal Reasoning, with subcategories (one course)", "Vb", 1),
+                                           GERequirementItem(
+                                               "VI. Language Other Than English (one course)", "VI", 1),
+                                           GERequirementItem(
+                                               "VII. Multicultural Studies (one course that may also satisfy another GE category)", "VII", 1),
+                                           GERequirementItem(
+                                               "VIII. International/Global Issues (one course that may also satisfy another GE category)", "VIII", 1),
                                        ]
                                        )
-    universal_requirements = DegreeRequirements([
+    universal_requirements = DegreeRequirements("University Requirements", [
         requirement_list
     ])
     assign_requirement_list_ids(requirement_list)
     return universal_requirements
 
 
-def parse_requirements(soup: BeautifulSoup) -> DegreeRequirements:
+def parse_requirements(soup: BeautifulSoup) -> List[RequirementList]:
     requirements_text_container = soup.find(id="requirementstextcontainer")
     if not requirements_text_container:
         requirements_text_container = soup.find(
             id="schoolrequirementstextcontainer")
     if not requirements_text_container:
-        return DegreeRequirements([])
+        return []
     degree_requirements = parse_requirements_text_container(
         requirements_text_container)
     return degree_requirements
 
 
-def parse_requirements_text_container(requirements_text_container: element.Tag) -> DegreeRequirements:
+def parse_requirements_text_container(requirements_text_container: element.Tag) -> List[RequirementList]:
     requirement_lists = []
     toggleheads = requirements_text_container.find_all(class_="tglhead")
     course_lists = requirements_text_container.find_all(class_="sc_courselist")
@@ -78,7 +79,7 @@ def parse_requirements_text_container(requirements_text_container: element.Tag) 
         requirements = parse_requirements_table(course_list)
         requirement_lists.append(RequirementList(
             header_clean_text, requirements))
-    return DegreeRequirements(requirement_lists)
+    return requirement_lists
 
 
 def get_potential_headers(course_list: element.Tag) -> List[str]:

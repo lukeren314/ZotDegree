@@ -7,7 +7,7 @@ function CommentRequirement(props) {
     <Fragment>
       <Divider />
       <ListItem dense={true}>
-        <ListItemText primary={requirement.comment} primaryTypographyProps={{variant:"body2"}}/>
+        <ListItemText primary={requirement.text} primaryTypographyProps={{variant:"body2"}}/>
       </ListItem>
       <Divider />
     </Fragment>
