@@ -152,9 +152,9 @@ class CourseDraggable extends PureComponent {
                     >
                       {isDeletable && (
                         <CourseDeleteButton
-                          courseId={course.content.id}
-                          removeCourseById={(courseId) =>
-                            dispatch((deleteAction || removeCourse)(courseId))
+                        draggableId={course.id}
+                          removeCourse={(draggableId) =>
+                            dispatch((deleteAction || removeCourse)(draggableId))
                           }
                         />
                       )}

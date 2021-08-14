@@ -153,7 +153,7 @@ const coursePlans = (
       return {
         ...state,
         coursePlan: state.coursePlan.filter(
-          (course) => course.content.id !== action.courseId
+          (course) => course.id !== action.draggableId
         ),
       };
     case SET_COURSE_PLANS:

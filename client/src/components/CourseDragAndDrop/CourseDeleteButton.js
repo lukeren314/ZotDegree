@@ -2,7 +2,7 @@ import { IconButton } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 
 function CourseDeleteButton(props) {
-  const { courseId, removeCourseById } = props;
+  const { draggableId, removeCourse } = props;
   return (
     <IconButton
       edge="end"
@@ -10,7 +10,7 @@ function CourseDeleteButton(props) {
       size="small"
       color="secondary"
       onClick={() => {
-        removeCourseById(courseId);
+        removeCourse(draggableId);
       }}
     >
       <ClearIcon fontSize="small" />

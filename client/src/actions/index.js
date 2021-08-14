@@ -226,10 +226,10 @@ export const SET_CURRENT_COURSE_PLAN = "SET_CURRENT_COURSE_PLAN";
 export const HIGHLIGHT_COURSE = "HIGHLIGHT_COURSE";
 export const UNHIGHLIGHT_COURSE = "UNHIGHLIGHT_COURSE";
 
-export const removeCourse = (courseId) =>
+export const removeCourse = (draggableId) =>
   modifyUserState({
     type: REMOVE_COURSE,
-    courseId,
+    draggableId,
   });
 
 export const setCoursePlans = (coursePlans) => ({
