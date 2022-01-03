@@ -18,13 +18,15 @@ class Course(JSONSerializable):
         self.name = name
         self.units = units
 
-    def set_course_data(self, description: str, prerequisite_text: str, corequisite: str, same_as: str, prerequisite_list: List[str], ge_list: List[str]):
+    def set_course_data(self, description: str, prerequisite_text: str, corequisite: str, same_as: str, restriction: str, prerequisite_list: List[str], ge_list: List[str], grading_option: str):
         self.description = description
         self.prerequisite_text = prerequisite_text
         self.corequisite = corequisite
         self.same_as = same_as
         self.prerequisite_list = prerequisite_list
         self.ge_list = ge_list
+        self.restriction = restriction
+        self.grading_option = grading_option
 
     def to_json(self):
         return {
@@ -38,7 +40,9 @@ class Course(JSONSerializable):
             "corequisite": self.corequisite,
             "same_as": self.same_as,
             "prerequisite_list": self.prerequisite_list,
-            "ge_list": self.ge_list
+            "ge_list": self.ge_list,
+            "restriction": self.restriction,
+            "grading_option": self.grading_option
         }
 
 

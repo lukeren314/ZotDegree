@@ -109,6 +109,8 @@ def parse_course_info(course_div: element.Tag) -> Dict[str, str]:
     corequisite = ""
     prerequisite_list = []
     same_as = ""
+    restriction = ""
+    grading_option = ""
     ge_categories = []
     lines = desc.get_text().split("\n")
     desc = lines[1]
@@ -133,19 +135,25 @@ def parse_course_info(course_div: element.Tag) -> Dict[str, str]:
             corequisite = line
         elif line.startswith("Same as "):
             same_as = line[len("Same as "):].replace(".", "").strip()
+        elif line.startswith("Grading Option:"):
+            grading_option = line[len("Grading Option:"):].strip()
         elif line.startswith("(I") or line.startswith("(V"):
             tokens = line.replace("(", "").replace(
                 ")", "").replace(",", "").split()
             for token in tokens:
                 if token in ("Ia", "Ib", "II", "III", "IV", "Va", "Vb", "VI", "VII", "VIII"):
                     ge_categories.append(token)
+        elif line.startswith("Restriction: "):
+            restriction = line[len("Restriction: "):].strip()
     return {
         "description": desc,
         "prerequisite_text": prerequisite,
         "corequisite": corequisite,
         "same_as": same_as,
         "prerequisite_list": prerequisite_list,
-        "ge_list": ge_categories
+        "ge_list": ge_categories,
+        "restriction": restriction,
+        "grading_option": grading_option
     }
 
 
