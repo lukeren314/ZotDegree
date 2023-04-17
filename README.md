@@ -3,7 +3,7 @@
 by Luke Ren
 
 Plan out your years at UCI with ease using ZotDegree!
-https://zotdegree.herokuapp.com/
+~https://zotdegree.herokuapp.com/~ EDIT: This app is no longer being hosted and there are no plans currently to re-host it.
 
 ## Planned Features
 
